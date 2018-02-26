@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 800 800" style="enable-background:new 0 0 800 800;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
+	.st2{fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+	.st3{fill:none;}
+	.st4{stroke:#000000;stroke-miterlimit:10;}
+	.st5{font-family:'OCRAStd';}
+	.st6{font-size:126px;}
+</style>
+<g id="Layer_2">
+	<rect y="0" class="st0" width="800" height="800"/>
+</g>
+<g id="Layer_4">
+	<path class="st1" d="M294.6,720.3"/>
+	<line class="st1" x1="478.4" y1="720.3" x2="313.2" y2="720.3"/>
+	<path class="st1" d="M478.4,720.3"/>
+	<polyline class="st2" points="717.1,223.3 717.1,720.3 497.3,720.3 	"/>
+	<path class="st2" d="M498.3,720.3c0-5.6-4.5-10.1-10.1-10.1c-5.6,0-10.1,4.5-10.1,10.1H314.3c0-5.6-4.5-10.1-10.1-10.1
+		c-5.6,0-10.1,4.5-10.1,10.1h0.6H76.5V79.7h640.5v120.8v-0.8h-17.3v24.8h17.3"/>
+</g>
+<g id="Layer_3">
+	<circle class="st2" cx="396.8" cy="400" r="320.3"/>
+</g>
+<g id="Layer_1">
+	<polyline class="st2" points="514.5,173.5 170.2,173.5 170.3,626.6 623.3,626.5 623.3,215.7 584.4,173.4 557,173.4 548,180.6 
+		526.5,180.7 	"/>
+	<path class="st1" d="M396.8,173.5"/>
+	<path class="st1" d="M396.8,173.3"/>
+	<path class="st2" d="M526.5,331.8c0,7.6-5.4,13.7-12,13.7H227.7c-6.6,0-12-6.1-12-13.7V187.2c0-7.6,5.4-13.7,12-13.7h286.8
+		c6.6,0,12,6.1,12,13.7V331.8z"/>
+	<path class="st2" d="M526.7,333.6c0,6.6-5.4,12-12,12H296.8c-6.6,0-12-5.4-12-12V185.5c0-6.6,5.4-12,12-12h217.9
+		c6.6,0,12,5.4,12,12V333.6z"/>
+	<path class="st2" d="M577.9,613.7c0,6.6-5.4,12-12,12H227.7c-6.6,0-12-5.4-12-12V381.1c0-6.6,5.4-12,12-12h338.2
+		c6.6,0,12,5.4,12,12V613.7z"/>
+	<rect x="179.9" y="590.2" class="st2" width="25.7" height="23"/>
+	<rect x="587.6" y="590.2" class="st2" width="25.7" height="23"/>
+	<rect x="433.6" y="193.5" class="st2" width="64.9" height="137.8"/>
+</g>
+<g id="Layer_5">
+	<rect x="258" y="442.5" class="st3" width="277.5" height="109.7"/>
+	<text transform="matrix(1 0 0 1 260.7021 547.998)" class="st4 st5 st6">PVV</text>
+</g>
+</svg>
