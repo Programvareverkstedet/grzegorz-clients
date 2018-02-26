@@ -1,3 +1,4 @@
+from functools import wraps
 import threading
 import youtube_dl
 
@@ -17,7 +18,8 @@ def get_youtube_metadata(url, ydl = youtube_dl.YoutubeDL()):
 	return title, "%i:%.2i" % (length//60, length%60)
 
 # decorator:
-def call_as_thread(func):
+def call_as_thread(func): # This will discard any return value!
+	@wraps(func)
 	def new_func(*args, **kwargs):
 		threading.Thread(
 			target = func,
