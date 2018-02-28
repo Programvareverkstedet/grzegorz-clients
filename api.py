@@ -18,7 +18,7 @@ def request_post(func):
         data = json.loads(response.text)
         if "error" not in data or data["error"] != False:
             print(data)
-            raise APIError(data["error_msg"])
+            raise APIError(data["error"])
         return data["success"]
     return new_func
 def request_get(func):
@@ -28,7 +28,7 @@ def request_get(func):
         response = requests.get(f"{BASE_URL}/{url}")
         data = json.loads(response.text)
         if "error" not in data or data["error"] != False:
-            raise APIError(data["error_msg"])
+            raise APIError(data["errortext"])
         return data["value"]
     return new_func
 
@@ -68,3 +68,17 @@ def playlist_next():
 @request_post
 def playlist_previous():
     return f"playlist/previous", None
+
+@request_get
+def get_playback_pos():
+    return f"time"
+
+@request_post
+def seek_absolute(pos):
+    args = urlencode(locals())
+    return f"time?{args}", None
+
+@request_post
+def seek_percent(percent):
+    args = urlencode(locals())
+    return f"time?{args}", None

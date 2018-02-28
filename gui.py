@@ -33,12 +33,25 @@ class MyApp(App):
 			playbackContainer.append(button)
 			button.set_on_click_listener(getattr(self,'playback_%s' % i))
 		
-		self.playback.playing = gui.Label("Now playing: None")
-		self.playback.slider = gui.Slider(0, 0, 100, 1, width="85%", height=20, margin='10px')
+		self.playback.volume_label = gui.Label("Volume:")
+		self.playback.volume_label.style["font-size"] = "0.8em"
+		self.playback.volume_slider = gui.Slider(100, 0, 100, 1, width="150px")
+		self.playback.volume_slider.style["margin-left"] = "20px"
+		self.playback.volume_slider.style["margin-bottom"] = "13px"
+		self.playback.volume_slider.set_oninput_listener(self.change_volume)
+		
+		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
+		self.playback.seek_slider = gui.Slider(0, 0, 100, 1, width="85%", height=20, margin='10px')
+		self.playback.seek_slider.set_oninput_listener(self.change_seek)
+		
+		volume_container = gui.VBox()
+		volume_container.append(self.playback.volume_label)
+		volume_container.append(self.playback.volume_slider)
+		playbackContainer.append(volume_container)
 		
 		container.append(self.playback.playing)
 		container.append(playbackContainer)
-		container.append(self.playback.slider)
+		container.append(self.playback.seek_slider)
 		
 		#playlist
 		self.playlist = Namespace()
@@ -66,13 +79,11 @@ class MyApp(App):
 		self.mainLoop()
 		return container
 	def mainLoop(self):
-		#self.playback.slider.get_value()
-		
+		#self.playback.seek_slider.get_value()
 		self.playback_update()
 		self.playlist_update()
 		
-		
-		Timer(0.7, self.mainLoop).start()
+		Timer(1, self.mainLoop).start()
 
 	# events:
 	@call_as_thread
@@ -81,11 +92,11 @@ class MyApp(App):
 	@call_as_thread
 	def playback_play(self, widget):# toggle playblack
 		if api.is_playing():
-			self.playback.play.set_text("Play")
 			api.set_playing(False)
+			self.set_playing(False)
 		else:
-			self.playback.play.set_text("Pause")
 			api.set_playing(True)
+			self.set_playing(True)
 	@call_as_thread
 	def playback_next(self, widget):
 		api.playlist_next()
@@ -98,16 +109,31 @@ class MyApp(App):
 		# (TODO):
 		# title, length = utils.get_youtube_metadata(value)
 		api.load_path(value)
+	@call_as_thread
+	def change_seek(self, widget, value):
+		api.seek_percent(value)
+	@call_as_thread
+	def change_volume(self, widget, value):
+		api.set_volume(value)
 
 	# playback steps:
 	@call_as_thread
-	def playback_update(self):
-		play_label = "Pause" if api.is_playing() else "Play"
-		playback_pos = random.randrange(0,100)
+	def playback_update(self, times_called=[0]):
+		is_playing = api.is_playing()
+		self.set_playing(is_playing)
+
+		if is_playing:
+			playback_pos = api.get_playback_pos()
+			playback_pos = playback_pos["current"] / playback_pos["total"] * 100
+			if self.playback.seek_slider.get_value() != playback_pos:
+				self.playback.seek_slider.set_value(playback_pos)
 		
-		#print(dir(self.playback.play))
-		self.playback.play.set_text(play_label)
-		self.playback.slider.set_value(playback_pos)
+		if times_called[0] % 5 == 0:
+			volume = api.get_volume()
+			if volume > 100: volume = 100
+			if self.playback.volume_slider.get_value() != volume:
+				self.playback.volume_slider.set_value(volume)
+		times_called[0] += 1
 	@call_as_thread
 	def volume_update(self):
 		self.volume.slider.set_value(api.get_volume())
@@ -125,3 +151,9 @@ class MyApp(App):
 
 		self.playlist.table.empty(keep_title=True)
 		self.playlist.table.append_from_list(table)
+	
+	#helpers
+	def set_playing(self, is_playing:bool):
+		self.playback.play.set_text("Pause" if is_playing else "Play")
+		self.playback.seek_slider.set_enabled(is_playing)
+		

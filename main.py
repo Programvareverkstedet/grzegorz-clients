@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from remi import start
+import os
 import api
 import gui
 
