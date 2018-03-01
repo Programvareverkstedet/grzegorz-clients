@@ -10,10 +10,10 @@ import gui
 #	config.start_browser: bool
 #	config.multiple_instance: bool
 def main(config):
-	assert hasattr(config, "host")
-	assert hasattr(config, "port")
-	assert hasattr(config, "start_browser")
-	assert hasattr(config, "multiple_instance")
+	assert hasattr(config, "host"), "Config has no attr 'host'!"
+	assert hasattr(config, "port"), "Config has no attr 'port'!"
+	assert hasattr(config, "start_browser"), "Config has no attr 'start_browser'!"
+	assert hasattr(config, "multiple_instance"), "Config has no attr 'multiple_instance'!"
 	
 	# start the webserver:
 	api.BASE_URL = config.api_base

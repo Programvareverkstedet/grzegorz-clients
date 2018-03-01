@@ -9,6 +9,7 @@ import api
 #globals:
 COLOR_BLUE = "rgb(33, 150, 243)"
 COLOR_BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
+WIDTH = 512
 
 class MyApp(App):
 	def __init__(self, *args):
@@ -16,12 +17,11 @@ class MyApp(App):
 		super(MyApp, self).__init__(*args, static_file_path=res_path)
 
 	def main(self):
-		container = gui.VBox(width=512)
-		container.style["margin-left"] = "auto"
-		container.style["margin-right"] = "auto"
+		container = gui.VBox(width=WIDTH)
+		container.style.update({"margin-left": "auto", "margin-right":"auto"})
 		
 		#logo:
-		container.append(gui.Image('/res/logo.jpg', width=512))
+		container.append(gui.Image('/res/logo.png', width=WIDTH))
 		
 		#playback controls
 		self.playback = Namespace()
@@ -38,8 +38,8 @@ class MyApp(App):
 		self.playback.volume_label = gui.Label("Volume:")
 		self.playback.volume_label.style["font-size"] = "0.8em"
 		self.playback.volume_slider = gui.Slider(100, 0, 100, 1, width="150px")
-		self.playback.volume_slider.style["margin-left"] = "20px"
-		self.playback.volume_slider.style["margin-bottom"] = "13px"
+		self.playback.volume_slider \
+			.style.update({"margin-left": "20px", "margin-bottom":"13px"})
 		self.playback.volume_slider.set_oninput_listener(self.change_volume)
 		
 		self.playback.seek_slider = gui.Slider(0, 0, 100, 1, width="85%", height=20, margin='10px')
@@ -67,7 +67,7 @@ class MyApp(App):
 		
 		#input
 		container.append(gui.Label("Add songs:"))
-		inputContainer = gui.HBox(width=512)
+		inputContainer = gui.HBox(width=WIDTH)
 		self.input = Namespace()
 		self.input.field = gui.TextInput(single_line=True, height="20px", margin="5px")
 		self.input.field.style["border"]     = "1px solid %s" % COLOR_BLUE
