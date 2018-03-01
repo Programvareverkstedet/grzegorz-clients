@@ -24,14 +24,16 @@ class MyApp(App):
 		container.append(gui.Image('/res/logo.jpg', width=512))
 		
 		#playback controls
-		playbackContainer = gui.HBox()#; container.append(playbackContainer)
-		
 		self.playback = Namespace()
-		for i in ("previous", "play", "next"):
-			button = gui.Button(i.capitalize(), margin="5px")
-			setattr(self.playback, i, button)
-			playbackContainer.append(button)
-			button.set_on_click_listener(getattr(self,'playback_%s' % i))
+		
+		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
+		
+		self.playback.previous, self.playback.play, self.playback.next \
+			= map(lambda x: gui.Button(f'<i class="fas fa-{x}"></i>', margin="3px", width="2.8em"), 
+			("step-backward", "play", "step-forward"))
+		self.playback.previous.set_on_click_listener(self.playback_previous)
+		self.playback.play.set_on_click_listener(self.playback_play)
+		self.playback.next.set_on_click_listener(self.playback_next)
 		
 		self.playback.volume_label = gui.Label("Volume:")
 		self.playback.volume_label.style["font-size"] = "0.8em"
@@ -40,16 +42,19 @@ class MyApp(App):
 		self.playback.volume_slider.style["margin-bottom"] = "13px"
 		self.playback.volume_slider.set_oninput_listener(self.change_volume)
 		
-		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
 		self.playback.seek_slider = gui.Slider(0, 0, 100, 1, width="85%", height=20, margin='10px')
 		self.playback.seek_slider.set_oninput_listener(self.change_seek)
 		
+		container.append(self.playback.playing)
+		
+		playbackContainer = gui.HBox()
+		playbackContainer.append(self.playback.previous)
+		playbackContainer.append(self.playback.play)
+		playbackContainer.append(self.playback.next)
 		volume_container = gui.VBox()
 		volume_container.append(self.playback.volume_label)
 		volume_container.append(self.playback.volume_slider)
 		playbackContainer.append(volume_container)
-		
-		container.append(self.playback.playing)
 		container.append(playbackContainer)
 		container.append(self.playback.seek_slider)
 		
@@ -154,6 +159,6 @@ class MyApp(App):
 	
 	#helpers
 	def set_playing(self, is_playing:bool):
-		self.playback.play.set_text("Pause" if is_playing else "Play")
+		self.playback.play.set_text('<i class="fas fa-pause"></i>' if is_playing else '<i class="fas fa-play"></i>')
 		self.playback.seek_slider.set_enabled(is_playing)
 		
