@@ -14,13 +14,8 @@ def main(config):
 		start_kwargs[attr] = getattr(config, attr)
 	assert hasattr(config, "api_base"), f"Config has no attribute 'api_base'!"
 	
-	if "standalone" in start_kwargs:
-		#Why must the standalone client be so picky?
-		for illega_attr in ("address", "port", "hostname", "websocket_port",
-				"username", "password", "start_browser", "multiple_instance",
-				"enable_file_cache"):
-			del start_kwargs[illega_attr]
-	
+	if config.standalone:#it's picky :(
+		start_kwargs = {"standalone":config.standalone}
 	
 	# start the webserver:
 	api.BASE_URL = config.api_base
