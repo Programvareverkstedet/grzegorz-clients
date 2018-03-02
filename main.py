@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from remi import start
 import os
-import api
-import gui
+from remi import start
+from grzegorz_clients import api, gui
+
 
 # config must be a object with the attributes seen in default_config.py:
 def main(config):

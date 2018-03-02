@@ -1,7 +1,7 @@
 import requests, json
 from urllib.parse import urlencode
 from functools import wraps
-import api
+from . import api
 
 # This must be set to be able to use it on remote hosts
 BASE_URL = "http://localhost:8080/api"

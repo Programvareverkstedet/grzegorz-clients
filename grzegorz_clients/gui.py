@@ -2,9 +2,8 @@ import random, os, time, shutil, sys
 from threading import Timer
 import remi.gui as gui
 from remi import App
-from utils import Namespace, call_as_thread, get_youtube_metadata
-
-import api
+from .utils import Namespace, call_as_thread, get_youtube_metadata
+from . import api
 
 #globals:
 COLOR_BLUE = "rgb(33, 150, 243)"
