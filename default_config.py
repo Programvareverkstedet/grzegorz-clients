@@ -14,7 +14,8 @@ websocket_port = 0 # 0 means random
 username = None
 password = None
 
-# Open a PyWebView window instead of using the browser. This requires pywebview to be installed
+# Open a PyWebView window instead of using the browser. This requires pywebview to be installed. 
+# This will negate all other options
 standalone = False
 
 # Defines whether the browser should be opened automatically at startup
