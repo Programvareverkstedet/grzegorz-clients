@@ -5,7 +5,7 @@ port = 8081 # http listen port
 api_base = "http://localhost:8080/api"
 
 # a string containing the host name or remote ip address that allows to access to your app.
-hostname = None
+host_name = None
 # websocket port
 websocket_port = 0 # 0 means random
 

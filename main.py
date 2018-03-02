@@ -7,7 +7,7 @@ from grzegorz_clients import api, gui
 # config must be a object with the attributes seen in default_config.py:
 def main(config):
 	start_kwargs = {}
-	for attr in ("address", "port", "hostname", "websocket_port",
+	for attr in ("address", "port", "host_name", "websocket_port",
 			"username", "password", "standalone", "start_browser",
 			"multiple_instance", "enable_file_cache"):
 		assert hasattr(config, attr), f"Config has no attribute {attr!r}!"
