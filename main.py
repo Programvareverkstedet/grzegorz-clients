@@ -4,27 +4,30 @@ import os
 import api
 import gui
 
-# config must be a object with the attributes::
-#	config.host: str
-#	config.port: str
-#	config.start_browser: bool
-#	config.multiple_instance: bool
+# config must be a object with the attributes seen in default_config.py:
 def main(config):
-	assert hasattr(config, "host"), "Config has no attr 'host'!"
-	assert hasattr(config, "port"), "Config has no attr 'port'!"
-	assert hasattr(config, "start_browser"), "Config has no attr 'start_browser'!"
-	assert hasattr(config, "multiple_instance"), "Config has no attr 'multiple_instance'!"
+	start_kwargs = {}
+	for attr in ("address", "port", "hostname", "websocket_port",
+			"username", "password", "standalone", "start_browser",
+			"multiple_instance", "enable_file_cache"):
+		assert hasattr(config, attr), f"Config has no attribute {attr!r}!"
+		start_kwargs[attr] = getattr(config, attr)
+	assert hasattr(config, "api_base"), f"Config has no attribute 'api_base'!"
+	
+	if "standalone" in start_kwargs:
+		#Why must the standalone client be so picky?
+		for illega_attr in ("address", "port", "hostname", "websocket_port",
+				"username", "password", "start_browser", "multiple_instance",
+				"enable_file_cache"):
+			del start_kwargs[illega_attr]
+	
 	
 	# start the webserver:
 	api.BASE_URL = config.api_base
 	start(
 		gui.MyApp,
 		title = "Gregorz",
-		address = config.host,
-		port = config.port,
-		start_browser = config.start_browser,
-		multiple_instance = config.multiple_instance,
-		enable_file_cache = True
+		**start_kwargs
 		)
 
 if __name__ == "__main__":
