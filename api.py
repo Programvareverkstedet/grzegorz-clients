@@ -3,8 +3,11 @@ from urllib.parse import urlencode
 from functools import wraps
 import api
 
-# This will be overwritten by config
+# This must be set to be able to use it on remote hosts
 BASE_URL = "http://localhost:8080/api"
+def set_endpoint(base_url:str):
+    global BASE_URL
+    BASE_URL = base_url
 
 # Exceptions:
 class APIError(Exception): pass

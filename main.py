@@ -18,7 +18,7 @@ def main(config):
 		start_kwargs = {"standalone":config.standalone}
 	
 	# start the webserver:
-	api.BASE_URL = config.api_base
+	api.set_endpoint(config.api_base)
 	start(
 		gui.MyApp,
 		title = "Gregorz",
