@@ -1,4 +1,5 @@
 # Gregorz webUI
+<img align="right" width="250" src="grzegorz_clients/res/logo.png">
 
 A simple webui to interface with the [Grzegorz API](https://github.com/Programvareverkstedet/grzegorz)
 
