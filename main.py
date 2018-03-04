@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 from remi import start
-from grzegorz_clients import api, gui
+from grzegorz_clients import api, remi_ui
 
 
 # config must be a object with the attributes seen in default_config.py:
@@ -20,7 +20,7 @@ def main(config):
 	# start the webserver:
 	api.set_endpoint(config.api_base)
 	start(
-		gui.MyApp,
+		remi_ui.RemiApp,
 		title = "Gregorz",
 		**start_kwargs
 		)

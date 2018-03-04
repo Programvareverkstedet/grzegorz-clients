@@ -10,10 +10,10 @@ COLOR_BLUE = "rgb(33, 150, 243)"
 COLOR_BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
 WIDTH = 512
 
-class MyApp(App):
+class RemiApp(App):
 	def __init__(self, *args):
 		res_path = os.path.join(os.path.dirname(__file__), 'res')
-		super(MyApp, self).__init__(*args, static_file_path=res_path)
+		super(RemiApp, self).__init__(*args, static_file_path=res_path)
 
 	def main(self):
 		container = gui.VBox(width=WIDTH)

@@ -1,2 +1,2 @@
 from . import api
-from . import gui
+from . import remi_ui
