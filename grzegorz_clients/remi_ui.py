@@ -50,15 +50,15 @@ class RemiApp(App):
 		
 		container.append(self.playback.playing)
 		
-		playbackContainer = gui.HBox()
-		playbackContainer.append(self.playback.previous)
-		playbackContainer.append(self.playback.play)
-		playbackContainer.append(self.playback.next)
+		playback_container = gui.HBox()
+		playback_container.append(self.playback.previous)
+		playback_container.append(self.playback.play)
+		playback_container.append(self.playback.next)
 		volume_container = gui.VBox()
 		volume_container.append(self.playback.volume_label)
 		volume_container.append(self.playback.volume_slider)
-		playbackContainer.append(volume_container)
-		container.append(playbackContainer)
+		playback_container.append(volume_container)
+		container.append(playback_container)
 		container.append(self.playback.seek_slider)
 		container.append(self.playback.timestamp)
 		
@@ -71,7 +71,7 @@ class RemiApp(App):
 		
 		#input
 		container.append(gui.Label("Add songs:"))
-		inputContainer = gui.HBox(width=WIDTH)
+		input_container = gui.HBox(width=WIDTH)
 		self.input = Namespace()
 		self.input.field = gui.TextInput(single_line=True, height="20px", margin="5px")
 		self.input.field.style["border"]     = "1px solid %s" % COLOR_BLUE
@@ -80,9 +80,9 @@ class RemiApp(App):
 		self.input.field.set_on_enter_listener(self.input_submit)
 		self.input.submit.set_on_click_listener(self.input_submit)
 		
-		inputContainer.append(self.input.field)
-		inputContainer.append(self.input.submit)
-		container.append(inputContainer)
+		input_container.append(self.input.field)
+		input_container.append(self.input.submit)
+		container.append(input_container)
 		
 		#return the container
 		self.mainLoop()
