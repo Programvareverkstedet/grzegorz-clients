@@ -13,6 +13,19 @@ def set_endpoint(base_url:str):
 class APIError(Exception): pass
 
 # decorator:
+# (TODO): Add logging
+def request_delete(func):
+    @wraps(func)
+    def new_func(*args, **kwargs):
+        url, data = func(*args, **kwargs)
+        if type(data) is dict: data = json.dumps(data)
+        response = requests.delete(f"{BASE_URL}/{url}", data=data)
+        data = json.loads(response.text)
+        if "error" not in data or data["error"] != False:
+            print(data)
+            raise APIError(data["error"])
+        return data["success"]
+    return new_func
 def request_post(func):
     @wraps(func)
     def new_func(*args, **kwargs):
@@ -72,6 +85,15 @@ def playlist_next():
 @request_post
 def playlist_previous():
     return f"playlist/previous", None
+
+@request_delete
+def playlist_clear():
+    return f"playlist", None
+
+@request_delete
+def playlist_remove(index:int):
+    args = urlencode(locals())
+    return f"playlist?{args}", None
 
 @request_get
 def get_playback_pos():
