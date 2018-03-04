@@ -78,11 +78,11 @@ def get_playback_pos():
     return f"time"
 
 @request_post
-def seek_absolute(pos):
+def seek_absolute(pos:float):
     args = urlencode(locals())
     return f"time?{args}", None
 
 @request_post
-def seek_percent(percent):
+def seek_percent(percent:int):
     args = urlencode(locals())
     return f"time?{args}", None
