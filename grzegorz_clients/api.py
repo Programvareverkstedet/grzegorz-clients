@@ -17,6 +17,7 @@ def request_post(func):
     @wraps(func)
     def new_func(*args, **kwargs):
         url, data = func(*args, **kwargs)
+        if type(data) is dict: data = json.dumps(data)
         response = requests.post(f"{BASE_URL}/{url}", data=data)
         data = json.loads(response.text)
         if "error" not in data or data["error"] != False:
@@ -38,9 +39,9 @@ def request_get(func):
 # methods:
 
 @request_post
-def load_path(path:str):
+def load_path(path:str, data:dict=None):
     args = urlencode(locals())
-    return f"load?{args}", None
+    return f"load?{args}", data
 
 @request_get
 def is_playing():

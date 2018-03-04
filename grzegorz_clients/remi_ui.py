@@ -8,6 +8,8 @@ from . import api
 #globals:
 COLOR_BLUE = "rgb(33, 150, 243)"
 COLOR_BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
+COLOR_LIGHT_BLUE = "#e3f2fd"
+COLOR_GRAY = "#212529"
 WIDTH = 512
 
 class RemiApp(App):
@@ -110,16 +112,24 @@ class RemiApp(App):
 			value = self.input.field.get_text()
 		self.input.field.set_text("")
 		
-		# (TODO):
-		# title, length = utils.get_youtube_metadata(value)
-		api.load_path(value)
+		self.input.field.set_enabled(False)
+		self.input.submit.set_enabled(False)
+		try:
+			data = get_youtube_metadata(value)
+		finally:
+			self.input.field.set_enabled(True)
+			self.input.submit.set_enabled(True)
+		
+		api.load_path(value, data)
 	@call_as_thread
 	def change_seek(self, widget, value):
 		api.seek_percent(value)
 	@call_as_thread
 	def change_volume(self, widget, value):
 		api.set_volume(value)
-
+	def on_table_row_click(self, row_widget, playlist_item):
+		print(playlist_item)
+	
 	# playback steps:
 	@call_as_thread
 	def playback_update(self, times_called=[0]):
@@ -127,11 +137,15 @@ class RemiApp(App):
 		self.set_playing(is_playing)
 
 		if is_playing:
-			playback_pos = api.get_playback_pos()
-			playback_pos = playback_pos["current"] / playback_pos["total"] * 100
-			if self.playback.seek_slider.get_value() != playback_pos:
-				self.playback.seek_slider.set_value(playback_pos)
-		
+			try:
+				playback_pos = api.get_playback_pos()
+			except api.APIError:
+				playback_pos = None
+			if playback_pos:
+				slider_pos = playback_pos["current"] / playback_pos["total"] * 100
+				if self.playback.seek_slider.get_value() != slider_pos:
+					self.playback.seek_slider.set_value(slider_pos)
+				
 		if times_called[0] % 5 == 0:
 			volume = api.get_volume()
 			if volume > 100: volume = 100
@@ -147,15 +161,34 @@ class RemiApp(App):
 		
 		table = []
 		for item in playlist:
+			name = playlist_item["filename"]
+			length = "--:--"
+			if "data" in playlist_item:
+				if "title" in playlist_item["data"]:
+					name = playlist_item["data"]["title"]
+				if "length" in playlist_item["data"]:
+					length = playlist_item["data"]["length"]
+			
 			table.append([
-				item["index"],
-				item["filename"],
-				"05:00" + ("#"*("current" in item))
+				playlist_item["index"],
+				name,
+				length,
 			])
 
 		self.playlist.table.empty(keep_title=True)
 		self.playlist.table.append_from_list(table)
-	
+		
+		for row_widget, playlist_item in zip(
+				map(self.playlist.table.get_child, self.playlist.table._render_children_list[1:]),
+				playlist):
+			if "current" in playlist_item:
+				row_widget.style["background-color"] = COLOR_LIGHT_BLUE
+			else:
+				row_widget.style["color"] = "#444"#COLOR_GRAY
+			row_widget.set_on_click_listener(self.on_table_row_click, playlist_item)
+			for item_widget in map(row_widget.get_child, row_widget._render_children_list):
+				pass
+
 	#helpers
 	def set_playing(self, is_playing:bool):
 		self.playback.play.set_text('<i class="fas fa-pause"></i>' if is_playing else '<i class="fas fa-play"></i>')
