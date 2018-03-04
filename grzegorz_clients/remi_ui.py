@@ -2,7 +2,7 @@ import random, os, time, shutil, sys
 from threading import Timer
 import remi.gui as gui
 from remi import App
-from .utils import Namespace, call_as_thread, get_youtube_metadata
+from .utils import Namespace, call_as_thread, get_youtube_metadata, seconds_to_timestamp
 from . import api
 
 #globals:
@@ -46,6 +46,8 @@ class RemiApp(App):
 		self.playback.seek_slider = gui.Slider(0, 0, 100, 1, width="85%", height=20, margin='10px')
 		self.playback.seek_slider.set_oninput_listener(self.change_seek)
 		
+		self.playback.timestamp = gui.Label("--:-- - --:--")
+		
 		container.append(self.playback.playing)
 		
 		playbackContainer = gui.HBox()
@@ -58,6 +60,7 @@ class RemiApp(App):
 		playbackContainer.append(volume_container)
 		container.append(playbackContainer)
 		container.append(self.playback.seek_slider)
+		container.append(self.playback.timestamp)
 		
 		#playlist
 		self.playlist = Namespace()
@@ -145,6 +148,13 @@ class RemiApp(App):
 				slider_pos = playback_pos["current"] / playback_pos["total"] * 100
 				if self.playback.seek_slider.get_value() != slider_pos:
 					self.playback.seek_slider.set_value(slider_pos)
+				self.playback.timestamp.set_text(
+					seconds_to_timestamp(playback_pos["current"])
+					+ " - " + 
+					seconds_to_timestamp(playback_pos["total"])
+					)
+			else:
+				self.playback.timestamp.set_text("--:-- - --:--")
 				
 		if times_called[0] % 5 == 0:
 			volume = api.get_volume()
@@ -159,8 +169,9 @@ class RemiApp(App):
 	def playlist_update(self):
 		playlist = api.get_playlist()
 		
+		N = len(playlist)
 		table = []
-		for item in playlist:
+		for i, playlist_item in enumerate(playlist):
 			name = playlist_item["filename"]
 			length = "--:--"
 			if "data" in playlist_item:
@@ -169,6 +180,10 @@ class RemiApp(App):
 				if "length" in playlist_item["data"]:
 					length = playlist_item["data"]["length"]
 			
+			if playlist_item.get("current", False):
+				self.playback.previous.set_enabled(i != 0)
+				self.playback.next.set_enabled(i != N-1)
+
 			table.append([
 				playlist_item["index"],
 				name,
