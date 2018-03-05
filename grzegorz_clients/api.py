@@ -95,6 +95,11 @@ def playlist_remove(index:int):
     args = urlencode(locals())
     return f"playlist?{args}", None
 
+@request_post
+def playlist_move(index1:int, index2:int):
+    args = urlencode(locals())
+    return f"playlist/move?{args}", None
+
 @request_get
 def get_playback_pos():
     return f"time"

@@ -4,12 +4,9 @@ import remi.gui as gui
 from remi import App
 from .utils import Namespace, call_as_thread, get_youtube_metadata, seconds_to_timestamp
 from . import api
+from .colors import *
 
 #globals:
-COLOR_BLUE = "rgb(33, 150, 243)"
-COLOR_BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
-COLOR_LIGHT_BLUE = "#e3f2fd"
-COLOR_GRAY = "#212529"
 WIDTH = 512
 
 class RemiApp(App):
@@ -65,12 +62,12 @@ class RemiApp(App):
 		#playlist
 		self.playlist = Namespace()
 		self.playlist.table = gui.Table(width="100%", margin="10px")
-		self.playlist.table.append_from_list([['#', 'Name', "length"]], fill_title=True)
+		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
 		
 		container.append(self.playlist.table)
 		
 		#input
-		container.append(gui.Label("Add songs:"))
+		container.append(gui.Label("Add song:"))
 		input_container = gui.HBox(width=WIDTH)
 		self.input = Namespace()
 		self.input.field = gui.TextInput(single_line=True, height="20px", margin="5px")
@@ -131,8 +128,19 @@ class RemiApp(App):
 	def change_volume(self, widget, value):
 		api.set_volume(value)
 	def on_table_row_click(self, row_widget, playlist_item):
-		print(playlist_item)
-	
+		print("row", playlist_item)
+	@call_as_thread
+	def on_table_item_move_click(self, row_widget, playlist_item, down = True):
+		index = playlist_item["index"]
+		dest = index + 2 if down else index-1
+		api.playlist_move(index, dest)
+	@call_as_thread
+	def on_table_item_remove_click(self, row_widget, playlist_item):
+		api.playlist_remove(playlist_item["index"])
+	@call_as_thread
+	def on_playlist_clear_click(self, row_widget):
+		api.playlist_clear()
+		
 	# playback steps:
 	@call_as_thread
 	def playback_update(self, times_called=[0]):
@@ -188,6 +196,9 @@ class RemiApp(App):
 				playlist_item["index"],
 				name,
 				length,
+				'<i class="fas fa-arrow-up"></i>',
+				'<i class="fas fa-arrow-down"></i>',
+				'<i class="fas fa-trash"></i>',
 			])
 
 		self.playlist.table.empty(keep_title=True)
@@ -199,10 +210,25 @@ class RemiApp(App):
 			if "current" in playlist_item:
 				row_widget.style["background-color"] = COLOR_LIGHT_BLUE
 			else:
-				row_widget.style["color"] = "#444"#COLOR_GRAY
+				row_widget.style["color"] = COLOR_GRAY_DARK
 			row_widget.set_on_click_listener(self.on_table_row_click, playlist_item)
-			for item_widget in map(row_widget.get_child, row_widget._render_children_list):
-				pass
+			for index, (key, item_widget) in enumerate(zip(row_widget._render_children_list,
+					map(row_widget.get_child, row_widget._render_children_list))):
+				if index >= 3:
+					item_widget.style["width"] = "1.1em"
+					item_widget.style["color"] = COLOR_TEAL
+				if index == 3:
+					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, False)
+					if playlist_item["index"] == 0:
+						item_widget.style["color"] = COLOR_GRAY_LIGHT
+				if index == 4:
+					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, True)
+					if playlist_item["index"] == N-1:
+						item_widget.style["color"] = COLOR_GRAY_LIGHT
+				if index == 5:
+					item_widget.style["color"] = COLOR_RED
+					item_widget.set_on_click_listener(self.on_table_item_remove_click, playlist_item)
+				#print(index, key, item_widget)
 
 	#helpers
 	def set_playing(self, is_playing:bool):

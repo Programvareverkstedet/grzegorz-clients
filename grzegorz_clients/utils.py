@@ -28,8 +28,6 @@ def get_youtube_metadata(url, ydl = youtube_dl.YoutubeDL()):
 		#Stop it from doing the whole playlist
 		url = filter_query_params(url, allowed=["v"])
 	
-	print(url)
-	
 	try:
 		resp = ydl.extract_info(url, download=False)
 	except DownloadError:
