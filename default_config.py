@@ -19,7 +19,7 @@ password = None
 standalone = False
 
 # Defines whether the browser should be opened automatically at startup
-start_browser = True 
+start_browser = False
 
 # Multipe instance. If True, multiple clients that connects to your script has different App instances
 multiple_instance = False
