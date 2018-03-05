@@ -33,6 +33,8 @@ class RemiApp(App):
 		self.playback.play.set_on_click_listener(self.playback_play)
 		self.playback.next.set_on_click_listener(self.playback_next)
 		
+		self.playback.play.style["background"] = f"linear-gradient(40deg,{COLOR_BLUE},{COLOR_PURPLE})"
+		
 		self.playback.volume_label = gui.Label("Volume:")
 		self.playback.volume_label.style["font-size"] = "0.8em"
 		self.playback.volume_slider = gui.Slider(100, 0, 100, 1, width="150px")
@@ -65,6 +67,7 @@ class RemiApp(App):
 		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
 		self.playlist.clear = gui.Button("CLEAR", height="1.8em")
 		self.playlist.clear.set_on_click_listener(self.on_playlist_clear_click)
+		self.playlist.clear.style["background"] = f"linear-gradient(40deg,{COLOR_RED},{COLOR_ORANGE})"
 		self.playlist.clear.style["font-size"] = "0.8em"
 		self.playlist.clear.style["margin-left"] = "auto"
 		self.playlist.clear.style["margin-right"] = "0.5em"
