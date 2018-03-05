@@ -2,7 +2,7 @@ import random, os, time, shutil, sys
 from threading import Timer
 import remi.gui as gui
 from remi import App
-from .utils import Namespace, call_as_thread, get_youtube_metadata, seconds_to_timestamp
+from .utils import Namespace, call_as_thread, seconds_to_timestamp
 from . import api
 from .colors import *
 
@@ -124,7 +124,8 @@ class RemiApp(App):
 		self.input.field.set_enabled(False)
 		self.input.submit.set_enabled(False)
 		try:
-			data = get_youtube_metadata(value)
+			#data = get_youtube_metadata(value)
+			data = None
 		finally:
 			self.input.field.set_enabled(True)
 			self.input.submit.set_enabled(True)
@@ -195,8 +196,8 @@ class RemiApp(App):
 			if "data" in playlist_item:
 				if "title" in playlist_item["data"]:
 					name = playlist_item["data"]["title"]
-				if "length" in playlist_item["data"]:
-					length = playlist_item["data"]["length"]
+				if "duration" in playlist_item["data"]:
+					length = seconds_to_timestamp(playlist_item["data"]["duration"])
 			
 			if playlist_item.get("current", False):
 				self.playback.previous.set_enabled(i != 0)
@@ -224,6 +225,9 @@ class RemiApp(App):
 			row_widget.set_on_click_listener(self.on_table_row_click, playlist_item)
 			for index, (key, item_widget) in enumerate(zip(row_widget._render_children_list,
 					map(row_widget.get_child, row_widget._render_children_list))):
+				if index == 1 and "failed" in playlist_item.get("data", {}):
+					item_widget.style["width"] = "1.1em"
+					item_widget.style["color"] = COLOR_RED
 				if index >= 3:
 					item_widget.style["width"] = "1.1em"
 					item_widget.style["color"] = COLOR_TEAL
