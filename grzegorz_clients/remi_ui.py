@@ -63,8 +63,14 @@ class RemiApp(App):
 		self.playlist = Namespace()
 		self.playlist.table = gui.Table(width="100%", margin="10px")
 		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
+		self.playlist.clear = gui.Button("CLEAR", height="1.8em")
+		self.playlist.clear.set_on_click_listener(self.on_playlist_clear_click)
+		self.playlist.clear.style["font-size"] = "0.8em"
+		self.playlist.clear.style["margin-left"] = "auto"
+		self.playlist.clear.style["margin-right"] = "0.5em"
 		
 		container.append(self.playlist.table)
+		container.append(self.playlist.clear)
 		
 		#input
 		container.append(gui.Label("Add song:"))
@@ -127,6 +133,7 @@ class RemiApp(App):
 	@call_as_thread
 	def change_volume(self, widget, value):
 		api.set_volume(value)
+	@call_as_thread
 	def on_table_row_click(self, row_widget, playlist_item):
 		print("row", playlist_item)
 	@call_as_thread
