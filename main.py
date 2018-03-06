@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-import os
+import os, sys
 from remi import start
+from threading import Timer
 from grzegorz_clients import api, remi_ui
 
 
@@ -26,7 +27,15 @@ def main(config):
 		)
 
 if __name__ == "__main__":
+	if "--no-volume" in sys.argv[1:]:
+		print("Keeping volume down")
+		def keep_volume_down():
+			api.set_volume(0)
+			Timer(5, keep_volume_down).start()
+		Timer(5, keep_volume_down).start()
+	
 	if not os.path.exists("config.py"):
 		shutil.copy("default_config.py", "config.py")
 	import config
+
 	main(config)

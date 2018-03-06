@@ -4,4 +4,4 @@ if ! which entr > /dev/null; then
     exit 1
 fi
 
-find . -name "*.py" | entr -r ./main.py
+find . -name "*.py" | entr -r ./main.py --no-volume
