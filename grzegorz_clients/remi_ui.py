@@ -13,39 +13,102 @@ class RemiApp(App):
 	def __init__(self, *args):
 		res_path = os.path.join(os.path.dirname(__file__), 'res')
 		super(RemiApp, self).__init__(*args, static_file_path=res_path)
-
-	def main(self):
-		container = gui.VBox(width=WIDTH)
-		container.style.update({"margin-left": "auto", "margin-right":"auto"})
 		
+	def make_gui_elements(self):
 		#logo:
-		container.append(gui.Image('/res/logo.png', width=WIDTH))
+		self.logo_image = gui.Image('/res/logo.png')
 		
 		#playback controls
 		self.playback = Namespace()
 		
 		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
 		
-		self.playback.previous = gui.Button(ICON_PREV, margin="3px", width="2.8em")
+		self.playback.previous = gui.Button(ICON_PREV)
 		self.playback.previous.set_on_click_listener(self.playback_previous)
-		self.playback.play = gui.Button(ICON_PLAY, margin="3px", width="2.8em")
+		self.playback.play = gui.Button(ICON_PLAY)
 		self.playback.play.set_on_click_listener(self.playback_play)
-		self.playback.next = gui.Button(ICON_NEXT, margin="3px", width="2.8em")
+		self.playback.next = gui.Button(ICON_NEXT)
 		self.playback.next.set_on_click_listener(self.playback_next)
 		
-		self.playback.play.style["background"] = f"linear-gradient(40deg,{COLOR_BLUE},{COLOR_PURPLE})"
-		
 		self.playback.volume_label = gui.Label("Volume:")
-		self.playback.volume_label.style["font-size"] = "0.8em"
-		self.playback.volume_slider = gui.Slider(100, 0, 100, 1, width="150px")
-		self.playback.volume_slider \
-			.style.update({"margin-left": "20px", "margin-bottom":"13px"})
+		self.playback.volume_slider = gui.Slider(100, 0, 100, 1)
 		self.playback.volume_slider.set_oninput_listener(self.change_volume)
 		
-		self.playback.seek_slider = gui.Slider(0, 0, 100, 1, width="85%", height=20, margin='10px')
+		self.playback.seek_slider = gui.Slider(0, 0, 100, 1)
 		self.playback.seek_slider.set_oninput_listener(self.change_seek)
 		
 		self.playback.timestamp = gui.Label("--:-- - --:--")
+		
+		#playlist
+		self.playlist = Namespace()
+		
+		self.playlist.table = gui.Table()
+		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
+		
+		self.playlist.shuffle = gui.Button("SHUFFLE")
+		self.playlist.shuffle.set_on_click_listener(self.on_playlist_clear_shuffle)
+		
+		self.playlist.clear = gui.Button("CLEAR")
+		self.playlist.clear.set_on_click_listener(self.on_playlist_clear_click)
+		
+		#input
+		self.input = Namespace()
+		self.input.add_song = gui.Label("Add song:")
+		self.input.field = gui.TextInput(single_line=True)
+		self.input.field.set_on_enter_listener(self.input_submit)
+		self.input.submit = gui.Button("Submit!")
+		self.input.submit.set_on_click_listener(self.input_submit)
+	def make_gui_container(self):#placement and styling
+		# Logo image:
+		self.logo_image.width = WIDTH
+		for i in (self.playback.previous, self.playback.play, self.playback.next):
+			i.style["margin"] = "3px"
+			i.style["width"]  = "2.8em"
+		
+		# Playback:
+		self.playback.play.style["background"] \
+			= f"linear-gradient(40deg,{COLOR_BLUE},{COLOR_PURPLE})"
+		
+		self.playback.volume_label.style["font-size"] = "0.8em"
+		
+		self.playback.volume_slider.style["width"] = "150px"
+		self.playback.volume_slider.style["margin-left"] = "20px"
+		self.playback.volume_slider.style["margin-bottom"] = "13px"
+		
+		self.playback.seek_slider.set_size("85%", "20px")
+		self.playback.seek_slider.style["margin"] = "10px"
+		
+		# Playlist:
+		self.playlist.table.style["width"] = "100%"
+		self.playlist.table.style["margin"] = "10px"
+		title_row = self.playlist.table.get_child("title")
+		title_row.get_child(title_row._render_children_list[1]) \
+			.style["width"] = "100%"
+		
+		self.playlist.clear.style["background"] \
+			= f"linear-gradient(40deg,{COLOR_RED},{COLOR_ORANGE})"
+		self.playlist.shuffle.style["background"] \
+			= f"linear-gradient(40deg,{COLOR_TEAL},{COLOR_GREEN})"
+
+		for i in (self.playlist.shuffle, self.playlist.clear):
+			i.style["height"] = "1.8em"
+			i.style["font-size"] = "0.8em"
+			i.style["margin-left"] = "0.25em"
+			i.style["margin-right"] = "0.25em"
+		
+		# Input field:
+		self.input.field.style["height"] = "20px"
+		self.input.field.style["margin"] = "5px"
+		self.input.field.style["border"] = "1px solid %s" % COLOR_BLUE
+		self.input.field.style["box-shadow"] = "0px 0px 5px 0px %s" % COLOR_BLUE_SHADOW
+		
+		self.input.submit.style["margin"] = "5px"
+		
+		# Containers:
+		container = gui.VBox(width=WIDTH)
+		container.style.update({"margin-left": "auto", "margin-right":"auto"})
+		
+		container.append(self.logo_image)
 		
 		container.append(self.playback.playing)
 		
@@ -53,59 +116,37 @@ class RemiApp(App):
 		playback_container.append(self.playback.previous)
 		playback_container.append(self.playback.play)
 		playback_container.append(self.playback.next)
+		
 		volume_container = gui.VBox()
 		volume_container.append(self.playback.volume_label)
 		volume_container.append(self.playback.volume_slider)
 		playback_container.append(volume_container)
+
 		container.append(playback_container)
+		
 		container.append(self.playback.seek_slider)
 		container.append(self.playback.timestamp)
 		
-		#playlist
-		self.playlist = Namespace()
-		self.playlist.table = gui.Table(width="100%", margin="10px")
-		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
-		self.playlist.shuffle = gui.Button("SHUFFLE", height="1.8em")
-		self.playlist.shuffle.set_on_click_listener(self.on_playlist_clear_shuffle)
-		self.playlist.clear = gui.Button("CLEAR", height="1.8em")
-		self.playlist.clear.set_on_click_listener(self.on_playlist_clear_click)
-		
-		self.playlist.table.get_child("title") \
-			.get_child(self.playlist.table.get_child("title")._render_children_list[1]) \
-			.style["width"] = "100%"
-		self.playlist.clear.style["background"] = f"linear-gradient(40deg,{COLOR_RED},{COLOR_ORANGE})"
-		self.playlist.shuffle.style["background"] = f"linear-gradient(40deg,{COLOR_TEAL},{COLOR_GREEN})"
-		for i in (self.playlist.shuffle, self.playlist.clear):
-			i.style.update({
-				"font-size": "0.8em",
-				"margin-left": "0.25em",
-				"margin-right": "0.25em",
-			})
-		
 		container.append(self.playlist.table)
+		
 		playlist_button_container = gui.HBox()
-		playlist_button_container.style["margin-left"] = "auto"
-		playlist_button_container.style["margin-right"] = "0.25em"
 		playlist_button_container.append(self.playlist.shuffle)
 		playlist_button_container.append(self.playlist.clear)
+		playlist_button_container.style["margin-left"] = "auto"
+		playlist_button_container.style["margin-right"] = "0.25em"
 		container.append(playlist_button_container)
 		
-		#input
-		container.append(gui.Label("Add song:"))
-		input_container = gui.HBox(width=WIDTH)
-		self.input = Namespace()
-		self.input.field = gui.TextInput(single_line=True, height="20px", margin="5px")
-		self.input.field.style["border"]     = "1px solid %s" % COLOR_BLUE
-		self.input.field.style["box-shadow"] = "0px 0px 5px 0px %s" % COLOR_BLUE_SHADOW
-		self.input.submit = gui.Button("Submit!", margin="5px")
-		self.input.field.set_on_enter_listener(self.input_submit)
-		self.input.submit.set_on_click_listener(self.input_submit)
+		container.append(self.input.add_song)
 		
+		input_container = gui.HBox(width="100%")
 		input_container.append(self.input.field)
 		input_container.append(self.input.submit)
 		container.append(input_container)
 		
-		#return the container
+		return container
+	def main(self):
+		self.make_gui_elements()
+		container = self.make_gui_container()
 		self.mainLoop()
 		return container
 	def mainLoop(self):
