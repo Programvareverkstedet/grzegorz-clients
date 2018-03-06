@@ -86,6 +86,10 @@ def playlist_next():
 def playlist_previous():
     return f"playlist/previous", None
 
+@request_post
+def playlist_shuffle():
+    return f"playlist/shuffle", None
+
 @request_delete
 def playlist_clear():
     return f"playlist", None

@@ -65,15 +65,27 @@ class RemiApp(App):
 		self.playlist = Namespace()
 		self.playlist.table = gui.Table(width="100%", margin="10px")
 		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
+		self.playlist.shuffle = gui.Button("SHUFFLE", height="1.8em")
+		self.playlist.shuffle.set_on_click_listener(self.on_playlist_clear_shuffle)
 		self.playlist.clear = gui.Button("CLEAR", height="1.8em")
 		self.playlist.clear.set_on_click_listener(self.on_playlist_clear_click)
+		
 		self.playlist.clear.style["background"] = f"linear-gradient(40deg,{COLOR_RED},{COLOR_ORANGE})"
-		self.playlist.clear.style["font-size"] = "0.8em"
-		self.playlist.clear.style["margin-left"] = "auto"
-		self.playlist.clear.style["margin-right"] = "0.5em"
+		self.playlist.shuffle.style["background"] = f"linear-gradient(40deg,{COLOR_TEAL},{COLOR_GREEN})"
+		for i in (self.playlist.shuffle, self.playlist.clear):
+			i.style.update({
+				"font-size": "0.8em",
+				"margin-left": "0.25em",
+				"margin-right": "0.25em",
+			})
 		
 		container.append(self.playlist.table)
-		container.append(self.playlist.clear)
+		playlist_button_container = gui.HBox()
+		playlist_button_container.style["margin-left"] = "auto"
+		playlist_button_container.style["margin-right"] = "0.25em"
+		playlist_button_container.append(self.playlist.shuffle)
+		playlist_button_container.append(self.playlist.clear)
+		container.append(playlist_button_container)
 		
 		#input
 		container.append(gui.Label("Add song:"))
@@ -148,6 +160,9 @@ class RemiApp(App):
 	@call_as_thread
 	def on_table_item_remove_click(self, row_widget, playlist_item):
 		api.playlist_remove(playlist_item["index"])
+	@call_as_thread
+	def on_playlist_clear_shuffle(self, row_widget):
+		api.playlist_shuffle()
 	@call_as_thread
 	def on_playlist_clear_click(self, row_widget):
 		api.playlist_clear()
