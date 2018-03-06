@@ -14,7 +14,7 @@ class RemiApp(App):
 		res_path = os.path.join(os.path.dirname(__file__), 'res')
 		super(RemiApp, self).__init__(*args, static_file_path=res_path)
 		
-	def make_gui_elements(self):
+	def make_gui_elements(self):#content and behaviour
 		#logo:
 		self.logo_image = gui.Image('/res/logo.png')
 		
@@ -150,8 +150,8 @@ class RemiApp(App):
 		self.mainLoop()
 		return container
 	def mainLoop(self):
-		#self.playback.seek_slider.get_value()
 		self.playback_update()
+		self.volume_update()
 		self.playlist_update()
 		
 		Timer(1, self.mainLoop).start()
@@ -211,61 +211,56 @@ class RemiApp(App):
 	def on_playlist_clear_click(self, row_widget):
 		api.playlist_clear()
 		
-	# playback steps:
+	# gui updaters:
 	@call_as_thread
-	def playback_update(self, times_called=[0]):
+	def playback_update(self):
 		is_playing = api.is_playing()
 		self.set_playing(is_playing)
 
-		if is_playing:
+		if is_playing: # update seekbar and timestamp
 			try:
 				playback_pos = api.get_playback_pos()
 			except api.APIError:
 				playback_pos = None
+			
 			if playback_pos:
 				slider_pos = playback_pos["current"] / playback_pos["total"] * 100
+				current = seconds_to_timestamp(playback_pos["current"])
+				total = seconds_to_timestamp(playback_pos["total"])
+				
 				if self.playback.seek_slider.get_value() != slider_pos:
 					self.playback.seek_slider.set_value(slider_pos)
-				self.playback.timestamp.set_text(
-					seconds_to_timestamp(playback_pos["current"])
-					+ " - " + 
-					seconds_to_timestamp(playback_pos["total"])
-					)
+				
+				self.playback.timestamp.set_text(f"{current} - {total}")
 			else:
 				self.playback.timestamp.set_text("--:-- - --:--")
-				
-		if times_called[0] % 5 == 0:
-			volume = api.get_volume()
-			if volume > 100: volume = 100
-			if self.playback.volume_slider.get_value() != volume:
-				self.playback.volume_slider.set_value(volume)
-		times_called[0] += 1
 	@call_as_thread
 	def volume_update(self):
-		self.volume.slider.set_value(api.get_volume())
+		volume = api.get_volume()
+		if volume > 100:
+			volume = 100
+		
+		if self.playback.volume_slider.get_value() != volume:
+			self.playback.volume_slider.set_value(volume)
 	@call_as_thread
 	def playlist_update(self):
-		playlist = api.get_playlist()
-		
+		playlist = api.get_playlist() # json structure
 		N = len(playlist)
+		
+		# update playlist table content:
 		table = []
-		for i, playlist_item in enumerate(playlist):
+		for playlist_item in playlist:
 			name = playlist_item["filename"]
-			length = "--:--"
-			if "data" in playlist_item:
-				if "title" in playlist_item["data"]:
-					name = playlist_item["data"]["title"]
-				if "duration" in playlist_item["data"]:
-					length = seconds_to_timestamp(playlist_item["data"]["duration"])
+			length = None
 			
-			if playlist_item.get("current", False):
-				self.playback.previous.set_enabled(i != 0)
-				self.playback.next.set_enabled(i != N-1)
-
+			if "data" in playlist_item:
+				name = playlist_item["data"].get("title", name)
+				length = playlist_item["data"].get("duration", length)
+			
 			table.append([
 				playlist_item["index"],
 				name,
-				length,
+				seconds_to_timestamp(length) if length else "--:--",
 				ICON_UP,
 				ICON_DOWN,
 				ICON_TRASH,
@@ -273,38 +268,46 @@ class RemiApp(App):
 
 		self.playlist.table.empty(keep_title=True)
 		self.playlist.table.append_from_list(table)
-		
-		for row_widget, playlist_item in zip(
-				map(self.playlist.table.get_child, self.playlist.table._render_children_list[1:]),
-				playlist):
-			if "current" in playlist_item:
+
+		# styling the new table:
+		# for each row element:
+		for row_key, playlist_item in zip(self.playlist.table._render_children_list[1:], playlist):
+			row_widget = self.playlist.table.get_child(row_key)
+			row_widget.set_on_click_listener(self.on_table_row_click, playlist_item)
+			
+			if playlist_item.get("current", False):
+				self.playback.previous.set_enabled(playlist_item.get("index") != 0)
+				self.playback.next.set_enabled(playlist_item.get("index") != N-1)
 				row_widget.style["background-color"] = COLOR_LIGHT_BLUE
 			else:
 				row_widget.style["color"] = COLOR_GRAY_DARK
-			row_widget.set_on_click_listener(self.on_table_row_click, playlist_item)
-			for index, (key, item_widget) in enumerate(zip(row_widget._render_children_list,
-					map(row_widget.get_child, row_widget._render_children_list))):
-				if index == 1 and "failed" in playlist_item.get("data", {}):
+			
+			
+			# for each item element in this row:
+			for item_index, item_key in enumerate(row_widget._render_children_list):
+				item_widget = row_widget.get_child(item_key)
+				
+				if item_index == 1 and "failed" in playlist_item.get("data", {}):
 					item_widget.style["width"] = "1.1em"
 					item_widget.style["color"] = COLOR_RED
-				if index >= 3:
+				
+				if item_index >= 3:
 					item_widget.style["width"] = "1.1em"
 					item_widget.style["color"] = COLOR_TEAL
-				if index == 3:
+				
+				if item_index == 3:
 					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, False)
 					if playlist_item["index"] == 0:
 						item_widget.style["color"] = COLOR_GRAY_LIGHT
-				if index == 4:
+				if item_index == 4:
 					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, True)
 					if playlist_item["index"] == N-1:
 						item_widget.style["color"] = COLOR_GRAY_LIGHT
-				if index == 5:
+				
+				if item_index == 5:
 					item_widget.style["color"] = COLOR_RED
 					item_widget.set_on_click_listener(self.on_table_item_remove_click, playlist_item)
 				#print(index, key, item_widget)
-
-	#helpers
-	def set_playing(self, is_playing:bool):
+	def set_playing(self, is_playing:bool): # Updates GUI elements
 		self.playback.play.set_text(ICON_PAUSE if is_playing else ICON_PLAY)
 		self.playback.seek_slider.set_enabled(is_playing)
-		
