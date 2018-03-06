@@ -70,6 +70,9 @@ class RemiApp(App):
 		self.playlist.clear = gui.Button("CLEAR", height="1.8em")
 		self.playlist.clear.set_on_click_listener(self.on_playlist_clear_click)
 		
+		self.playlist.table.get_child("title") \
+			.get_child(self.playlist.table.get_child("title")._render_children_list[1]) \
+			.style["width"] = "100%"
 		self.playlist.clear.style["background"] = f"linear-gradient(40deg,{COLOR_RED},{COLOR_ORANGE})"
 		self.playlist.shuffle.style["background"] = f"linear-gradient(40deg,{COLOR_TEAL},{COLOR_GREEN})"
 		for i in (self.playlist.shuffle, self.playlist.clear):
