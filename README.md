@@ -1,7 +1,14 @@
-# Gregorz webUI
+# Gregorz Clients
 <img align="right" width="250" src="grzegorz_clients/res/logo.png">
 
-A simple webui to interface with the [Grzegorz API](https://github.com/Programvareverkstedet/grzegorz)
+A set of simple API endpoints and ready-to-go clients to interface with the [Grzegorz API](https://github.com/Programvareverkstedet/grzegorz)
+
+#### Working clients:
+*  A webUI client made with REMI
+
+#### Planned future clients:
+* CLI client
+* WebExtensions browser extension
 
 
 ## How to run this
@@ -10,17 +17,20 @@ First of we need to install any needed dependencies. If you want to, you may do 
 
 To install the needed dependencies, run this with sufficient rights (as root?):
 
-```
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
 
-Now, make a copy of `default_config.py` named `config.py`, and make any changes you see fit. Each field should be described there
+Now, make a copy of `default_config.py` named `config.py`, and make any changes you see fit. Each field should be described in the file.
 
 When finished, run the server with:
 
-```
-python3 main.py
-```
+    python3 main.py
+
+
+## Developing on this
+
+If you plan on making changes to the code, i advice you to install [`entr`](http://entrproject.org/) and use the supplied script `dev.sh`.
+It will restart the server everytime you write a change to any of the .py files in the project.
+
 
 ## License
 
