@@ -1,3 +1,4 @@
+# Colors
 COLOR_BLUE = "rgb(33, 150, 243)"
 COLOR_BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
 COLOR_LIGHT_BLUE = "#e3f2fd"
@@ -22,3 +23,12 @@ COLOR_WARNING = "#ffc107"
 COLOR_DANGER = "#dc3545"
 COLOR_LIGHT = "#f8f9fa"
 COLOR_DARK = "#343a40"
+
+# Font Awesome
+ICON_PREV = '<i class="fas fa-step-backward"></i>'
+ICON_NEXT = '<i class="fas fa-step-forward"></i>'
+ICON_PLAY = '<i class="fas fa-play"></i>'
+ICON_PAUSE = '<i class="fas fa-pause"></i>'
+ICON_TRASH = '<i class="fas fa-trash"></i>'
+ICON_DOWN = '<i class="fas fa-arrow-down"></i>'
+ICON_UP = '<i class="fas fa-arrow-up"></i>'

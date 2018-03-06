@@ -4,7 +4,7 @@ import remi.gui as gui
 from remi import App
 from .utils import Namespace, call_as_thread, seconds_to_timestamp
 from . import api
-from .colors import *
+from .constants import *
 
 #globals:
 WIDTH = 512
@@ -26,11 +26,11 @@ class RemiApp(App):
 		
 		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
 		
-		self.playback.previous, self.playback.play, self.playback.next \
-			= map(lambda x: gui.Button(f'<i class="fas fa-{x}"></i>', margin="3px", width="2.8em"), 
-			("step-backward", "play", "step-forward"))
+		self.playback.previous = gui.Button(ICON_PREV, margin="3px", width="2.8em")
 		self.playback.previous.set_on_click_listener(self.playback_previous)
+		self.playback.play = gui.Button(ICON_PLAY, margin="3px", width="2.8em")
 		self.playback.play.set_on_click_listener(self.playback_play)
+		self.playback.next = gui.Button(ICON_NEXT, margin="3px", width="2.8em")
 		self.playback.next.set_on_click_listener(self.playback_next)
 		
 		self.playback.play.style["background"] = f"linear-gradient(40deg,{COLOR_BLUE},{COLOR_PURPLE})"
@@ -225,9 +225,9 @@ class RemiApp(App):
 				playlist_item["index"],
 				name,
 				length,
-				'<i class="fas fa-arrow-up"></i>',
-				'<i class="fas fa-arrow-down"></i>',
-				'<i class="fas fa-trash"></i>',
+				ICON_UP,
+				ICON_DOWN,
+				ICON_TRASH,
 			])
 
 		self.playlist.table.empty(keep_title=True)
@@ -264,6 +264,6 @@ class RemiApp(App):
 
 	#helpers
 	def set_playing(self, is_playing:bool):
-		self.playback.play.set_text('<i class="fas fa-pause"></i>' if is_playing else '<i class="fas fa-play"></i>')
+		self.playback.play.set_text(ICON_PAUSE if is_playing else ICON_PLAY)
 		self.playback.seek_slider.set_enabled(is_playing)
 		
