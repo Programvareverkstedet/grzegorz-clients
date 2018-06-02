@@ -7,7 +7,9 @@ from . import api
 from .constants import *
 
 #globals:
-WIDTH = 512
+WIDTH_L = 480
+WIDTH_R = 512
+WIDTH = WIDTH_L  + 40 + WIDTH_R
 
 class RemiApp(App):
 	def __init__(self, *args):
@@ -58,9 +60,10 @@ class RemiApp(App):
 		self.input.field.set_on_enter_listener(self.input_submit)
 		self.input.submit = gui.Button("Submit!")
 		self.input.submit.set_on_click_listener(self.input_submit)
+		
 	def make_gui_container(self):#placement and styling
 		# Logo image:
-		self.logo_image.width = WIDTH
+		self.logo_image.style["width"] = f"{WIDTH_L}px"
 		for i in (self.playback.previous, self.playback.play, self.playback.next):
 			i.style["margin"] = "3px"
 			i.style["width"]  = "2.8em"
@@ -75,7 +78,7 @@ class RemiApp(App):
 		self.playback.volume_slider.style["margin-left"] = "20px"
 		self.playback.volume_slider.style["margin-bottom"] = "13px"
 		
-		self.playback.seek_slider.set_size("85%", "20px")
+		self.playback.seek_slider.set_size("90%", "20px")
 		self.playback.seek_slider.style["margin"] = "10px"
 		
 		# Playlist:
@@ -105,12 +108,19 @@ class RemiApp(App):
 		self.input.submit.style["margin"] = "5px"
 		
 		# Containers:
-		container = gui.VBox(width=WIDTH)
-		container.style.update({"margin-left": "auto", "margin-right":"auto"})
+		root_container = gui.HBox(width = WIDTH)
 		
-		container.append(self.logo_image)
+		# LEFT SIDE
+		left_container = gui.VBox(width=WIDTH_L)
+		left_container.style["margin-top"] = "0.8em"
+		left_container.style["align-self"] = "flex-start"
+		root_container.append(left_container)
 		
-		container.append(self.playback.playing)
+		root_container.style.update({"margin-left": "auto", "margin-right":"auto"})
+		
+		left_container.append(self.logo_image)
+		
+		left_container.append(self.playback.playing)
 		
 		playback_container = gui.HBox()
 		playback_container.append(self.playback.previous)
@@ -122,28 +132,34 @@ class RemiApp(App):
 		volume_container.append(self.playback.volume_slider)
 		playback_container.append(volume_container)
 
-		container.append(playback_container)
+		left_container.append(playback_container)
 		
-		container.append(self.playback.seek_slider)
-		container.append(self.playback.timestamp)
+		left_container.append(self.playback.seek_slider)
+		left_container.append(self.playback.timestamp)
 		
-		container.append(self.playlist.table)
+		# RIGHT SIDE
+		right_container = gui.VBox(width=WIDTH_R)
+		root_container.append(right_container)
+		
+		right_container.append(self.input.add_song)
+		
+		input_container = gui.HBox(width="100%")
+		input_container.append(self.input.field)
+		input_container.append(self.input.submit)
+		right_container.append(input_container)
+		
+		right_container.append(self.playlist.table)
 		
 		playlist_button_container = gui.HBox()
 		playlist_button_container.append(self.playlist.shuffle)
 		playlist_button_container.append(self.playlist.clear)
 		playlist_button_container.style["margin-left"] = "auto"
 		playlist_button_container.style["margin-right"] = "0.25em"
-		container.append(playlist_button_container)
+		playlist_button_container.style["margin-bottom"] = "0.8em"
+		right_container.append(playlist_button_container)
 		
-		container.append(self.input.add_song)
+		return root_container
 		
-		input_container = gui.HBox(width="100%")
-		input_container.append(self.input.field)
-		input_container.append(self.input.submit)
-		container.append(input_container)
-		
-		return container
 	def main(self):
 		self.make_gui_elements()
 		container = self.make_gui_container()
