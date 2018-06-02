@@ -7,7 +7,7 @@ from . import api
 from .constants import *
 
 #globals:
-WIDTH_L = 480
+WIDTH_L = 400
 WIDTH_R = 512
 WIDTH = WIDTH_L  + 40 + WIDTH_R
 
@@ -63,7 +63,7 @@ class RemiApp(App):
 		
 	def make_gui_container(self):#placement and styling
 		# Logo image:
-		self.logo_image.style["width"] = f"{WIDTH_L}px"
+		self.logo_image.style["width"] = f"100%"
 		for i in (self.playback.previous, self.playback.play, self.playback.next):
 			i.style["margin"] = "3px"
 			i.style["width"]  = "2.8em"
@@ -104,19 +104,24 @@ class RemiApp(App):
 		self.input.field.style["margin"] = "5px"
 		self.input.field.style["border"] = "1px solid %s" % COLOR_BLUE
 		self.input.field.style["box-shadow"] = "0px 0px 5px 0px %s" % COLOR_BLUE_SHADOW
+		self.input.field.style["align-self"] = "flex-start"
 		
-		self.input.submit.style["margin"] = "5px"
+		self.input.submit.style["margin"] = "0px 5px"
+		self.input.submit.style["padding"] = "0px 10px"
 		
 		# Containers:
-		root_container = gui.HBox(width = WIDTH)
+		root_container = gui.HBox()
+		root_container.style.update({"margin-left": "auto", "margin-right":"auto"})
+		root_container.style["margin-left"] = "auto"
+		root_container.style["margin-right"] = "auto"
+		root_container.style["max-width"] = f"{WIDTH}px"
+		root_container.style["flex-wrap"] = "wrap"
 		
 		# LEFT SIDE
 		left_container = gui.VBox(width=WIDTH_L)
 		left_container.style["margin-top"] = "0.8em"
 		left_container.style["align-self"] = "flex-start"
 		root_container.append(left_container)
-		
-		root_container.style.update({"margin-left": "auto", "margin-right":"auto"})
 		
 		left_container.append(self.logo_image)
 		
@@ -139,11 +144,15 @@ class RemiApp(App):
 		
 		# RIGHT SIDE
 		right_container = gui.VBox(width=WIDTH_R)
+		right_container.style["margin-top"] = "0.8em"
+		right_container.style["align-self"] = "flex-start"
 		root_container.append(right_container)
 		
+		self.input.add_song.style["line-height"] = "1em"
 		right_container.append(self.input.add_song)
 		
 		input_container = gui.HBox(width="100%")
+		input_container.style["margin"] = "0px"
 		input_container.append(self.input.field)
 		input_container.append(self.input.submit)
 		right_container.append(input_container)
