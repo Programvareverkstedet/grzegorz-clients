@@ -1,0 +1,11 @@
+[Unit]
+Description=Grzegorz webUI
+
+#Requires=grzegorz@.service
+
+[Service]
+WorkingDirectory=/home/grzegorz/grzegorz_clients
+ExecStart=/usr/bin/python main.py
+
+[Install]
+WantedBy=default.target

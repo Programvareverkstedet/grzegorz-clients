@@ -25,6 +25,13 @@ When finished, run the server with:
 
     python3 main.py
 
+## Making the webui run on boot
+
+Copy the files in the folder dist into $HOME/.config/systemd/user and run the following commands as the user intended to run the server:
+
+	$ systemd --user enable grzegorz_webui.service
+	$ systemd --user start grzegorz_webui.service
+
 
 ## Developing on this
 
