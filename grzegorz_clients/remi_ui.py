@@ -25,6 +25,9 @@ class RemiApp(App):
 		
 		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
 		
+		self.playback.party = gui.Button(ICON_PARTY)
+		self.playback.party.attributes["onclick"] = "document.body.classList.toggle('dancing');"
+		self.playback.party.attributes["title"] = "ENABLE PARTY MODE" # hover text
 		self.playback.previous = gui.Button(ICON_PREV)
 		self.playback.previous.set_on_click_listener(self.playback_previous)
 		self.playback.play = gui.Button(ICON_PLAY)
@@ -64,13 +67,17 @@ class RemiApp(App):
 	def make_gui_container(self):#placement and styling
 		# Logo image:
 		self.logo_image.style["width"] = f"100%"
-		for i in (self.playback.previous, self.playback.play, self.playback.next):
+		for i in (self.playback.previous, self.playback.play, self.playback.next, self.playback.party):
 			i.style["margin"] = "3px"
 			i.style["width"]  = "2.8em"
 		
 		# Playback:
+		self.playback.party.style["background"] \
+			= f"linear-gradient(40deg,{COLOR_PINK},{COLOR_TEAL})"
+
 		self.playback.play.style["background"] \
 			= f"linear-gradient(40deg,{COLOR_BLUE},{COLOR_PURPLE})"
+
 		
 		self.playback.volume_label.style["font-size"] = "0.8em"
 		
@@ -128,6 +135,7 @@ class RemiApp(App):
 		left_container.append(self.playback.playing)
 		
 		playback_container = gui.HBox()
+		playback_container.append(self.playback.party)
 		playback_container.append(self.playback.previous)
 		playback_container.append(self.playback.play)
 		playback_container.append(self.playback.next)

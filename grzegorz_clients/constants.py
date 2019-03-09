@@ -25,6 +25,7 @@ COLOR_LIGHT = "#f8f9fa"
 COLOR_DARK = "#343a40"
 
 # Font Awesome
+ICON_PARTY = '<i class="fas fa-hat-wizard"></i>'
 ICON_PREV = '<i class="fas fa-step-backward"></i>'
 ICON_NEXT = '<i class="fas fa-step-forward"></i>'
 ICON_PLAY = '<i class="fas fa-play"></i>'

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url("https://use.fontawesome.com/releases/v5.0.7/css/all.css");
+@import url("https://use.fontawesome.com/releases/v5.7.2/css/all.css");
 
 @font-face {
     font-family: 'Roboto';
@@ -657,4 +657,45 @@ ul.TreeView{
 }
 .TreeItem[has-subtree='true'][treeopen='true']:hover {
     background-color: transparent;
+}
+
+/* document.body.classList.toggle("dancing"); */
+body.dancing::before,
+body.dancing::after {
+    position: fixed !important;
+    display: block;
+    z-index: 1;
+    bottom:-0.2em;
+}
+
+body.dancing::before {
+    left:0;
+    content: url('/res/dance2.gif');
+}
+
+body.dancing::after {
+    right:0;
+    content: url('/res/dance1.gif');
+    transform: scale(0.5);
+    transform-origin: 100% 100%;
+}
+
+body.dancing {
+  animation-name: party_colors;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+
+}
+@keyframes party_colors {
+      0%{background-color: red;}
+     10%{background-color: blue;}
+     20%{background-color: green;}
+     30%{background-color: yellow;}
+     40%{background-color: pink;}
+     50%{background-color: white;}
+     60%{background-color: cyan;}
+     70%{background-color: purple;}
+     80%{background-color: lime;}
+     90%{background-color: #a0aaff;}
+    100%{background-color: red;}
 }
