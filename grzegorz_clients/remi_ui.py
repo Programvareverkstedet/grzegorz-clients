@@ -50,6 +50,9 @@ class RemiApp(App):
 		self.playlist.table = gui.Table()
 		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
 		
+		self.playlist.looping = gui.CheckBoxLabel("<i><small>loop playlist</small></i>")
+		self.playlist.looping.set_on_click_listener(self.on_playlist_set_looping)
+
 		self.playlist.shuffle = gui.Button("SHUFFLE")
 		self.playlist.shuffle.set_on_click_listener(self.on_playlist_clear_shuffle)
 		
@@ -167,13 +170,20 @@ class RemiApp(App):
 		
 		right_container.append(self.playlist.table)
 		
+		playlist_controls = gui.HBox()
+		playlist_controls.style["width"] = "100%"
+		playlist_controls.style["justify-content"] = "space-between"
+		playlist_controls.style["margin-right"] = "0.25em"
+		playlist_controls.style["margin-bottom"] = "0.8em"
+
+		playlist_controls.append(self.playlist.looping)
+
 		playlist_button_container = gui.HBox()
 		playlist_button_container.append(self.playlist.shuffle)
 		playlist_button_container.append(self.playlist.clear)
-		playlist_button_container.style["margin-left"] = "auto"
-		playlist_button_container.style["margin-right"] = "0.25em"
-		playlist_button_container.style["margin-bottom"] = "0.8em"
-		right_container.append(playlist_button_container)
+		playlist_controls.append(playlist_button_container)
+
+		right_container.append(playlist_controls)
 		
 		return root_container
 		
@@ -238,6 +248,11 @@ class RemiApp(App):
 	def on_table_item_remove_click(self, row_widget, playlist_item):
 		api.playlist_remove(playlist_item["index"])
 	@call_as_thread
+	def on_playlist_set_looping(self, row_widget):
+		toggled = not row_widget.get_value()
+		api.playlist_set_looping(toggled)
+		row_widget.set_value(toggled)
+	@call_as_thread
 	def on_playlist_clear_shuffle(self, row_widget):
 		api.playlist_shuffle()
 	@call_as_thread
@@ -249,6 +264,8 @@ class RemiApp(App):
 	def playback_update(self):
 		is_playing = api.is_playing()
 		self.set_playing(is_playing)
+
+		self.playlist.looping.set_value(api.get_playlist_looping())
 
 		if is_playing: # update seekbar and timestamp
 			try:

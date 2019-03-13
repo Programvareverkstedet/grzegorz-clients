@@ -105,6 +105,15 @@ def playlist_move(index1:int, index2:int):
     return f"playlist/move?{args}", None
 
 @request_get
+def get_playlist_looping():
+    return f"playlist/loop"
+
+@request_post
+def playlist_set_looping(looping:bool):
+    return f"playlist/loop?loop={str(bool(looping)).lower()}", None
+
+
+@request_get
 def get_playback_pos():
     return f"time"
 
