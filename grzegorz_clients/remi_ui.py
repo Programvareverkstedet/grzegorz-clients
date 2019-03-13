@@ -48,7 +48,7 @@ class RemiApp(App):
 		self.playlist = Namespace()
 		
 		self.playlist.table = gui.Table()
-		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", ""]], fill_title=True)
+		self.playlist.table.append_from_list([['#', 'Name', "length", "", "", "", ""]], fill_title=True)
 		
 		self.playlist.looping = gui.CheckBoxLabel("<i><small>loop playlist</small></i>")
 		self.playlist.looping.set_on_click_listener(self.on_playlist_set_looping)
@@ -248,6 +248,9 @@ class RemiApp(App):
 	def on_table_item_remove_click(self, row_widget, playlist_item):
 		api.playlist_remove(playlist_item["index"])
 	@call_as_thread
+	def on_table_item_goto_item(self, row_widget, playlist_item):
+		api.playlist_goto(playlist_item["index"])
+	@call_as_thread
 	def on_playlist_set_looping(self, row_widget):
 		toggled = not row_widget.get_value()
 		api.playlist_set_looping(toggled)
@@ -311,6 +314,7 @@ class RemiApp(App):
 				playlist_item["index"],
 				name,
 				seconds_to_timestamp(length) if length else "--:--",
+				ICON_GOTO,
 				ICON_UP,
 				ICON_DOWN,
 				ICON_TRASH,
@@ -343,20 +347,32 @@ class RemiApp(App):
 				
 				if item_index >= 3:
 					item_widget.style["width"] = "1.1em"
-					item_widget.style["color"] = COLOR_TEAL
 				
-				if item_index == 3:
+				if item_index == 3: # seek here
+					item_widget.style["color"] = COLOR_GREEN#COLOR_RED if playlist_item.get("current", False) else 
+					item_widget.set_on_click_listener(self.on_table_item_goto_item, playlist_item)
+					item_widget.attributes["title"] = "Play this item"
+
+				if item_index == 4: # move up
 					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, False)
 					if playlist_item["index"] == 0:
 						item_widget.style["color"] = COLOR_GRAY_LIGHT
-				if item_index == 4:
+					else:
+						item_widget.style["color"] = COLOR_TEAL
+					item_widget.attributes["title"] = "Move this item up the playlist"
+				if item_index == 5: # move down
 					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, True)
 					if playlist_item["index"] == N-1:
 						item_widget.style["color"] = COLOR_GRAY_LIGHT
+					else:
+						item_widget.style["color"] = COLOR_TEAL
+					item_widget.attributes["title"] = "Move this item down the playlist"
 				
-				if item_index == 5:
+				if item_index == 6: # remove from playlist
 					item_widget.style["color"] = COLOR_RED
 					item_widget.set_on_click_listener(self.on_table_item_remove_click, playlist_item)
+					item_widget.attributes["title"] = "Remove this item from the playlist"
+
 				#print(index, key, item_widget)
 	def set_playing(self, is_playing:bool): # Updates GUI elements
 		self.playback.play.set_text(ICON_PAUSE if is_playing else ICON_PLAY)

@@ -83,6 +83,11 @@ def playlist_next():
     return f"playlist/next", None
 
 @request_post
+def playlist_goto(index:int):
+    args = urlencode(locals())
+    return f"playlist/goto?{args}", None
+
+@request_post
 def playlist_previous():
     return f"playlist/previous", None
 
