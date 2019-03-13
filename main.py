@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, sys
+import os, sys, shutil
 from remi import start
 from threading import Timer
 from grzegorz_clients import api, remi_ui
