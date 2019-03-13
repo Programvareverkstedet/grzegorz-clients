@@ -19,6 +19,7 @@ class RemiApp(App):
 	def make_gui_elements(self):#content and behaviour
 		#logo:
 		self.logo_image = gui.Image('/res/logo.png')
+		self.logo_image.attributes["onclick"] = "document.location='https://www.youtube.com/watch?v=t-fcrn1Edik'"
 		
 		#playback controls
 		self.playback = Namespace()
