@@ -29,8 +29,8 @@ When finished, run the server with:
 
 Copy the files in the folder dist into $HOME/.config/systemd/user and run the following commands as the user intended to run the server:
 
-	$ systemd --user enable grzegorz_webui.service
-	$ systemd --user start grzegorz_webui.service
+	$ systemctl --user enable grzegorz_webui.service
+	$ systemctl --user start grzegorz_webui.service
 
 
 ## Developing on this
