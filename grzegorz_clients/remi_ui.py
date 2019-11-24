@@ -14,6 +14,7 @@ WIDTH = WIDTH_L  + 40 + WIDTH_R
 class RemiApp(App):
 	def __init__(self, *args):
 		res_path = os.path.join(os.path.dirname(__file__), 'res')
+		self.old_playlist = None
 		super(RemiApp, self).__init__(*args, static_file_path=res_path)
 		
 	def make_gui_elements(self):#content and behaviour
@@ -320,6 +321,9 @@ class RemiApp(App):
 				ICON_DOWN,
 				ICON_TRASH,
 			])
+
+		if table == self.old_playlist: return
+		self.old_playlist = table
 
 		self.playlist.table.empty(keep_title=True)
 		self.playlist.table.append_from_list(table)
