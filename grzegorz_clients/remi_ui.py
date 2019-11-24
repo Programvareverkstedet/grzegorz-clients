@@ -322,8 +322,9 @@ class RemiApp(App):
 				ICON_TRASH,
 			])
 
-		if table == self.old_playlist: return
-		self.old_playlist = table
+		this_playlist = zip(table, [i.get("current", False) for i in playlist]) # ew, but it works...
+		if this_playlist == self.old_playlist: return
+		self.old_playlist = this_playlist
 
 		self.playlist.table.empty(keep_title=True)
 		self.playlist.table.append_from_list(table)
