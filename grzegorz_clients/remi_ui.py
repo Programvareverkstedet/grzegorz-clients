@@ -1,10 +1,10 @@
-import random, os, time, shutil, sys
+import os
 from threading import Timer
 import remi.gui as gui
 from remi import App
 from .utils import Namespace, call_as_thread, seconds_to_timestamp
 from . import api
-from .constants import *
+from .constants import colors, icons
 
 #globals:
 WIDTH_L = 400
@@ -27,14 +27,14 @@ class RemiApp(App):
 
 		self.playback.playing = gui.Label("Now playing: None")# (TODO): update this
 
-		self.playback.party = gui.Button(ICON_PARTY)
+		self.playback.party = gui.Button(icons.PARTY)
 		self.playback.party.attributes["onclick"] = "document.body.classList.toggle('dancing');"
 		self.playback.party.attributes["title"] = "ENABLE PARTY MODE" # hover text
-		self.playback.previous = gui.Button(ICON_PREV)
+		self.playback.previous = gui.Button(icons.PREV)
 		self.playback.previous.set_on_click_listener(self.playback_previous)
-		self.playback.play = gui.Button(ICON_PLAY)
+		self.playback.play = gui.Button(icons.PLAY)
 		self.playback.play.set_on_click_listener(self.playback_play)
-		self.playback.next = gui.Button(ICON_NEXT)
+		self.playback.next = gui.Button(icons.NEXT)
 		self.playback.next.set_on_click_listener(self.playback_next)
 
 		self.playback.volume_label = gui.Label("Volume:")
@@ -78,10 +78,10 @@ class RemiApp(App):
 
 		# Playback:
 		self.playback.party.style["background"] \
-			= f"linear-gradient(40deg,{COLOR_PINK},{COLOR_TEAL})"
+			= f"linear-gradient(40deg,{colors.PINK},{colors.TEAL})"
 
 		self.playback.play.style["background"] \
-			= f"linear-gradient(40deg,{COLOR_BLUE},{COLOR_PURPLE})"
+			= f"linear-gradient(40deg,{colors.BLUE},{colors.PURPLE})"
 
 
 		self.playback.volume_label.style["font-size"] = "0.8em"
@@ -101,9 +101,9 @@ class RemiApp(App):
 			.style["width"] = "100%"
 
 		self.playlist.clear.style["background"] \
-			= f"linear-gradient(40deg,{COLOR_RED},{COLOR_ORANGE})"
+			= f"linear-gradient(40deg,{colors.RED},{colors.ORANGE})"
 		self.playlist.shuffle.style["background"] \
-			= f"linear-gradient(40deg,{COLOR_TEAL},{COLOR_GREEN})"
+			= f"linear-gradient(40deg,{colors.TEAL},{colors.GREEN})"
 
 		for i in (self.playlist.shuffle, self.playlist.clear):
 			i.style["height"] = "1.8em"
@@ -114,8 +114,8 @@ class RemiApp(App):
 		# Input field:
 		self.input.field.style["height"] = "20px"
 		self.input.field.style["margin"] = "5px"
-		self.input.field.style["border"] = "1px solid %s" % COLOR_BLUE
-		self.input.field.style["box-shadow"] = "0px 0px 5px 0px %s" % COLOR_BLUE_SHADOW
+		self.input.field.style["border"] = "1px solid %s" % colors.BLUE
+		self.input.field.style["box-shadow"] = "0px 0px 5px 0px %s" % colors.BLUE_SHADOW
 		self.input.field.style["align-self"] = "flex-start"
 
 		self.input.submit.style["margin"] = "0px 5px"
@@ -333,10 +333,10 @@ class RemiApp(App):
 				playlist_item["index"],
 				name,
 				seconds_to_timestamp(length) if length else "--:--",
-				ICON_GOTO,
-				ICON_UP,
-				ICON_DOWN,
-				ICON_TRASH,
+				icons.GOTO,
+				icons.UP,
+				icons.DOWN,
+				icons.TRASH,
 			])
 
 		this_playlist = list(zip(table, [i.get("current", False) for i in playlist])) # ew, but it works...
@@ -355,9 +355,9 @@ class RemiApp(App):
 			if playlist_item.get("current", False):
 				self.playback.previous.set_enabled(playlist_item.get("index") != 0)
 				self.playback.next.set_enabled(playlist_item.get("index") != N-1)
-				row_widget.style["background-color"] = COLOR_LIGHT_BLUE
+				row_widget.style["background-color"] = colors.LIGHT_BLUE
 			else:
-				row_widget.style["color"] = COLOR_GRAY_DARK
+				row_widget.style["color"] = colors.GRAY_DARK
 
 
 			# for each item element in this row:
@@ -366,38 +366,38 @@ class RemiApp(App):
 
 				if item_index == 1 and "failed" in playlist_item.get("data", {}):
 					item_widget.style["width"] = "1.1em"
-					item_widget.style["color"] = COLOR_RED
+					item_widget.style["color"] = colors.RED
 
 				if item_index >= 3:
 					item_widget.style["width"] = "1.1em"
 
 				if item_index == 3: # seek here
-					item_widget.style["color"] = COLOR_GREEN#COLOR_RED if playlist_item.get("current", False) else
+					item_widget.style["color"] = colors.GREEN#colors.RED if playlist_item.get("current", False) else
 					item_widget.set_on_click_listener(self.on_table_item_play_item, playlist_item)
 					item_widget.attributes["title"] = "Play this item"
 
 				if item_index == 4: # move up
 					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, False)
 					if playlist_item["index"] == 0:
-						item_widget.style["color"] = COLOR_GRAY_LIGHT
+						item_widget.style["color"] = colors.GRAY_LIGHT
 					else:
-						item_widget.style["color"] = COLOR_TEAL
+						item_widget.style["color"] = colors.TEAL
 					item_widget.attributes["title"] = "Move this item up the playlist"
 				if item_index == 5: # move down
 					item_widget.set_on_click_listener(self.on_table_item_move_click, playlist_item, True)
 					if playlist_item["index"] == N-1:
-						item_widget.style["color"] = COLOR_GRAY_LIGHT
+						item_widget.style["color"] = colors.GRAY_LIGHT
 					else:
-						item_widget.style["color"] = COLOR_TEAL
+						item_widget.style["color"] = colors.TEAL
 					item_widget.attributes["title"] = "Move this item down the playlist"
 
 				if item_index == 6: # remove from playlist
-					item_widget.style["color"] = COLOR_RED
+					item_widget.style["color"] = colors.RED
 					item_widget.set_on_click_listener(self.on_table_item_remove_click, playlist_item)
 					item_widget.attributes["title"] = "Remove this item from the playlist"
 
 				#print(index, key, item_widget)
 
 	def set_playing(self, is_playing:bool): # Only updates GUI elements!
-		self.playback.play.set_text(ICON_PAUSE if is_playing else ICON_PLAY)
+		self.playback.play.set_text(icons.PAUSE if is_playing else icons.PLAY)
 		self.playback.seek_slider.set_enabled(is_playing)

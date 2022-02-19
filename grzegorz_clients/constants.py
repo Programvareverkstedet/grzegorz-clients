@@ -1,36 +1,40 @@
-# Colors
-COLOR_BLUE = "rgb(33, 150, 243)"
-COLOR_BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
-COLOR_LIGHT_BLUE = "#e3f2fd"
-COLOR_INDIGO = "#6610f2"
-COLOR_PURPLE = "#6f42c1"
-COLOR_PINK = "#e83e8c"
-COLOR_RED = "#dd2c00"
-COLOR_ORANGE = "#fd7e14"
-COLOR_YELLOW = "#ffc107"
-COLOR_GREEN = "#28a745"
-COLOR_TEAL = "#20c997"
-COLOR_CYAN = "#17a2b8"
-COLOR_WHITE = "#fff"
-COLOR_GRAY_LIGHT = "#abc"
-COLOR_GRAY = "#6c757d"
-COLOR_GRAY_DARK = "#343a40"
-COLOR_PRIMARY = "#007bff"
-COLOR_SECONDARY = "#6c757d"
-COLOR_SUCCESS = "#28a745"
-COLOR_INFO = "#17a2b8"
-COLOR_WARNING = "#ffc107"
-COLOR_DANGER = "#dc3545"
-COLOR_LIGHT = "#f8f9fa"
-COLOR_DARK = "#343a40"
+@(lambda x: x()) # singleton
+class colors:
+    BLUE        = "rgb(33, 150, 243)"
+    BLUE_SHADOW = "rgba(33, 150, 243, 0.75)"
+    LIGHT_BLUE  = "#e3f2fd"
+    INDIGO      = "#6610f2"
+    PURPLE      = "#6f42c1"
+    PINK        = "#e83e8c"
+    RED         = "#dd2c00"
+    ORANGE      = "#fd7e14"
+    YELLOW      = "#ffc107"
+    GREEN       = "#28a745"
+    TEAL        = "#20c997"
+    CYAN        = "#17a2b8"
+    WHITE       = "#fff"
+    GRAY_LIGHT  = "#abc"
+    GRAY        = "#6c757d"
+    GRAY_DARK   = "#343a40"
+    PRIMARY     = "#007bff"
+    SECONDARY   = "#6c757d"
+    SUCCESS     = "#28a745"
+    INFO        = "#17a2b8"
+    WARNING     = "#ffc107"
+    DANGER      = "#dc3545"
+    LIGHT       = "#f8f9fa"
+    DARK        = "#343a40"
 
-# Font Awesome
-ICON_PARTY = '<i class="fas fa-hat-wizard"></i>'
-ICON_PREV = '<i class="fas fa-step-backward"></i>'
-ICON_NEXT = '<i class="fas fa-step-forward"></i>'
-ICON_PLAY = '<i class="fas fa-play"></i>'
-ICON_PAUSE = '<i class="fas fa-pause"></i>'
-ICON_TRASH = '<i class="fas fa-trash"></i>'
-ICON_GOTO = '<i class="fas fa-play-circle"></i>'
-ICON_DOWN = '<i class="fas fa-arrow-down"></i>'
-ICON_UP = '<i class="fas fa-arrow-up"></i>'
+@(lambda x: x()) # singleton
+class icons:
+
+    # Font Awesome
+    PARTY = '<i class="fas fa-hat-wizard"></i>'
+    PREV  = '<i class="fas fa-step-backward"></i>'
+    NEXT  = '<i class="fas fa-step-forward"></i>'
+    PLAY  = '<i class="fas fa-play"></i>'
+    PAUSE = '<i class="fas fa-pause"></i>'
+    TRASH = '<i class="fas fa-trash"></i>'
+    GOTO  = '<i class="fas fa-play-circle"></i>'
+    DOWN  = '<i class="fas fa-arrow-down"></i>'
+    UP    = '<i class="fas fa-arrow-up"></i>'
