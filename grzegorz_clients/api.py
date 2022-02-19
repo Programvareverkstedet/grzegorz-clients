@@ -1,7 +1,6 @@
 import requests, json
 from urllib.parse import urlencode
 from functools import wraps
-from . import api
 
 # This must be set to be able to use it on remote hosts
 BASE_URL = "http://localhost:8080/api"
@@ -52,82 +51,82 @@ def request_get(func):
 # methods:
 
 @request_post
-def load_path(path:str, data:dict=None):
+def load_path(path:str, data: dict = None):
     args = urlencode(locals())
     return f"load?{args}", data
 
 @request_get
 def is_playing():
-    return f"play"
+    return "play"
 
 @request_post
-def set_playing(play:bool):
+def set_playing(play: bool):
     args = urlencode(locals())
     return f"play?{args}", None
 
 @request_get
 def get_volume():
-    return f"volume"
+    return "volume"
 
 @request_post
-def set_volume(volume:int):# between 0 and 100 (you may also exceed 100)
+def set_volume(volume: int): # between 0 and 100 (you may also exceed 100)
     args = urlencode(locals())
     return f"volume?{args}", None
 
 @request_get
 def get_playlist():
-    return f"playlist"
+    return "playlist"
 
 @request_post
 def playlist_next():
-    return f"playlist/next", None
+    return "playlist/next", None
 
 @request_post
-def playlist_goto(index:int):
+def playlist_goto(index: int):
     args = urlencode(locals())
     return f"playlist/goto?{args}", None
 
 @request_post
 def playlist_previous():
-    return f"playlist/previous", None
+    return "playlist/previous", None
 
 @request_post
 def playlist_shuffle():
-    return f"playlist/shuffle", None
+    return "playlist/shuffle", None
 
 @request_delete
 def playlist_clear():
-    return f"playlist", None
+    return "playlist", None
 
 @request_delete
-def playlist_remove(index:int):
+def playlist_remove(index: int):
     args = urlencode(locals())
     return f"playlist?{args}", None
 
 @request_post
-def playlist_move(index1:int, index2:int):
+def playlist_move(index1: int, index2: int):
     args = urlencode(locals())
     return f"playlist/move?{args}", None
 
 @request_get
 def get_playlist_looping():
-    return f"playlist/loop"
+    return "playlist/loop"
 
 @request_post
-def playlist_set_looping(looping:bool):
+def playlist_set_looping(looping: bool):
     return f"playlist/loop?loop={str(bool(looping)).lower()}", None
 
 
 @request_get
 def get_playback_pos():
-    return f"time"
+    return "time"
 
 @request_post
-def seek_absolute(pos:float):
+def seek_absolute(pos: float):
     args = urlencode(locals())
     return f"time?{args}", None
 
 @request_post
-def seek_percent(percent:int):
+def seek_percent(percent: int):
     args = urlencode(locals())
     return f"time?{args}", None

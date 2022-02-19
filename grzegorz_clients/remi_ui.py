@@ -2,7 +2,8 @@ import os
 from threading import Timer
 import remi.gui as gui
 from remi import App
-from .utils import Namespace, call_as_thread, seconds_to_timestamp
+from argparse import Namespace
+from .utils import call_as_thread, seconds_to_timestamp
 from . import api
 from .constants import colors, icons
 
@@ -71,7 +72,7 @@ class RemiApp(App):
 
 	def make_gui_container(self):#placement and styling
 		# Logo image:
-		self.logo_image.style["width"] = f"100%"
+		self.logo_image.style["width"] = "100%"
 		for i in (self.playback.previous, self.playback.play, self.playback.next, self.playback.party):
 			i.style["margin"] = "3px"
 			i.style["width"]  = "2.8em"

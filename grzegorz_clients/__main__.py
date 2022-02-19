@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os, sys, shutil
 from remi import start
 from threading import Timer
 import typer
