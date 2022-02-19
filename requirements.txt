@@ -1,3 +1,0 @@
-youtube-dl>=2017.8.23
-https://github.com/dddomodossola/remi/archive/v1.0.tar.gz
-requests

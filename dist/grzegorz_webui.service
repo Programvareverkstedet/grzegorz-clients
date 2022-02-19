@@ -4,8 +4,7 @@ Description=Grzegorz webUI
 #Requires=grzegorz@.service
 
 [Service]
-WorkingDirectory=/home/grzegorz/grzegorz_clients
-ExecStart=/usr/bin/python main.py
+ExecStart=grzegorz-webui
 
 [Install]
 WantedBy=default.target

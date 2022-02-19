@@ -13,30 +13,37 @@ A set of simple API endpoints and ready-to-go clients to interface with the [Grz
 
 ## How to run this
 
-First of we need to install any needed dependencies. If you want to, you may do so in a virtual environment.
+As the user intended to run the server:
 
-To install the needed dependencies, run this with sufficient rights (as root?):
+    pip install --user git+https://github.com/Programvareverkstedet/grzegorz_clients.git#master
+    grzegorz-webui --host 0.0.0.0 --port 80
 
-    pip install -r requirements.txt
+It's rather insecure and could use a reverse proxy and some whitelisting. ;)
 
-Now, make a copy of `default_config.py` named `config.py`, and make any changes you see fit. Each field should be described in the file.
-
-When finished, run the server with:
-
-    python3 main.py
 
 ## Making the webui run on boot
 
-Copy the files in the folder dist into $HOME/.config/systemd/user and run the following commands as the user intended to run the server:
+Modify and copy the files in `dist` to `$HOME/.config/systemd/user`, then run the following commands as the user intended to run the server:
 
 	$ systemctl --user enable grzegorz_webui.service
 	$ systemctl --user start grzegorz_webui.service
 
 
-## Developing on this
+## Development
 
-If you plan on making changes to the code, i advice you to install [`entr`](http://entrproject.org/) and use the supplied script `dev.sh`.
-It will restart the server everytime you write a change to any of the .py files in the project.
+Setup virtual environment and running the server:
+
+    poetry install
+    grzegorz-webui --no-volume
+
+If you also run a local instance of the Grzegorz API:
+
+    grzegorz-webui --api-base http://localhost:8000/api
+
+If you plan on making changes to the code, preferably install [`entr`](http://entrproject.org/) and use the supplied script `dev.sh`.
+It will restart the server every time you change any of the files tracked by git.
+
+    ./dev.sh --api-base http://localhost:8000/api
 
 
 ## License
