@@ -1,0 +1,48 @@
+{
+  "nodes": {
+    "grzegorz": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1692297562,
+        "narHash": "sha256-QdFaVJdLS7vj6quN4DkWQYv297fNJIHeYvoidzaxcUg=",
+        "owner": "Programvareverkstedet",
+        "repo": "grzegorz",
+        "rev": "59fffe853a6d3385c2967a65455c336fb6d7f92c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Programvareverkstedet",
+        "repo": "grzegorz",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1692174805,
+        "narHash": "sha256-xmNPFDi/AUMIxwgOH/IVom55Dks34u1g7sFKKebxUm0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "caac0eb6bdcad0b32cb2522e03e4002c8975c62e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "grzegorz": "grzegorz",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
