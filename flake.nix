@@ -53,7 +53,7 @@
         format = "pyproject";
         src = ./.;
         nativeBuildInputs = [ poetry-core ];
-        propagatedBuildInputs = [ setuptools youtube-dl flakes.self.pkgs.remi requests typer urllib3 ];
+        propagatedBuildInputs = [ setuptools flakes.self.pkgs.remi requests typer urllib3 ];
       };
       default = flakes.self.pkgs.grzegorz-clients;
     });
