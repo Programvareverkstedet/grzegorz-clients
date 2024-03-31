@@ -69,7 +69,7 @@ def get_volume():
     return "volume"
 
 @request_post
-def set_volume(volume: int): # between 0 and 100 (you may also exceed 100)
+def set_volume(volume: float): # between 0 and 100 (you may also exceed 100)
     args = urlencode(locals())
     return f"volume?{args}", None
 
@@ -115,7 +115,6 @@ def get_playlist_looping():
 @request_post
 def playlist_set_looping(looping: bool):
     return f"playlist/loop?loop={str(bool(looping)).lower()}", None
-
 
 @request_get
 def get_playback_pos():

@@ -55,7 +55,7 @@
         format = "pyproject";
         src = ./.;
         nativeBuildInputs = [ poetry-core ];
-        propagatedBuildInputs = [ setuptools flakes.self.pkgs.remi requests typer urllib3 ];
+        propagatedBuildInputs = [ setuptools flakes.self.pkgs.remi requests typer rich urllib3 ];
       };
       default = flakes.self.pkgs.grzegorz-clients;
     });
@@ -63,7 +63,9 @@
     apps = forAllSystems ({ system, ...}: rec {
       grzegorz-webui.type = "app";
       grzegorz-webui.program = "${self.packages.${system}.grzegorz-clients}/bin/grzegorz-webui";
-      default = grzegorz-webui;
+      grzegorzctl.type = "app";
+      grzegorzctl.program = "${self.packages.${system}.grzegorz-clients}/bin/grzegorzctl";
+      default = grzegorzctl;
     });
 
     nixosModules.grzegorz-webui = { config, pkgs, ... }: let

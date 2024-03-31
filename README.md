@@ -5,13 +5,21 @@ A set of simple API endpoints and ready-to-go clients to interface with the [Grz
 
 #### Working clients:
 *  A webUI client made with REMI
+*  CLI client
 
 #### Planned future clients:
-* CLI client
 * WebExtensions browser extension
 
 
 ## How to run this
+
+    pip install --user git+https://github.com/Programvareverkstedet/grzegorz_clients.git#master
+
+### cli
+
+    grzegorzctl
+
+### webui
 
 As the user intended to run the server:
 

@@ -9,14 +9,16 @@ license = "MIT"
 python = ">=3.7,<4.0"
 remi = "1.0"
 requests = ">=2.27.1,<3"
+rich = ">=13.3.5"
 typer = ">=0.4.0"
-urllib3 = "^1.26.8"
+urllib3 = ">=1.26.8,<3"
 
 [tool.poetry.dev-dependencies]
 python-lsp-server = {extras = ["all"], version = "^1.5.0"}
 
 [tool.poetry.scripts]
 grzegorz-webui = "grzegorz_clients.__main__:cli"
+grzegorzctl = "grzegorz_clients.cli:cli"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
