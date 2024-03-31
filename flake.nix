@@ -30,6 +30,8 @@
       #"riscv64-linux"
     ];
   in {
+    inherit inputs;
+
     packages = forAllSystems ({ pkgs, flakes, ...}: {
       remi = with pkgs.python3.pkgs; buildPythonPackage rec {
         pname = "remi";
@@ -126,5 +128,14 @@
         };
       };
     };
+
+    devShells = forAllSystems ({ pkgs, ... }: rec {
+      default = pkgs.mkShellNoCC {
+        packages = [
+          pkgs.poetry
+          pkgs.python3
+        ];
+      };
+    });
   };
 }
