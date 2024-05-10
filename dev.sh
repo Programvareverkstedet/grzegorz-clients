@@ -1,5 +1,5 @@
-#!/bin/bash
-if ! which entr > /dev/null; then
+#!/usr/bin/env bash
+if ! command -v entr > /dev/null; then
     echo "entr is not installed, aborting..."
     exit 1
 fi

@@ -320,6 +320,16 @@ class RemiApp(App):
 		playlist = api.get_playlist() # json structure
 		N = len(playlist)
 
+		start_ellipsis = False
+		end_ellipsis   = False
+		if N > 100:
+			current, *_ = *(i for i, playlist_item in enumerate(playlist) if playlist_item.get("current", False)), None
+			if current is not None:
+				playlist = playlist[max(0, current - 50) : max(current+50, 100)]
+				start_ellipsis = current - 50 > 0
+				end_ellipsis   = max(current+50, 100) < N
+
+
 		# update playlist table content:
 		table = []
 		for playlist_item in playlist:
@@ -340,6 +350,11 @@ class RemiApp(App):
 				icons.TRASH,
 			])
 
+		if start_ellipsis:
+			table.insert(0, ["", f"...{current - 50} more ...", "", "", "", "", ""])
+		if end_ellipsis:
+			table.append(["", f"...{N - current - 50} more ...", "", "", "", "", ""])
+
 		this_playlist = list(zip(table, [i.get("current", False) for i in playlist])) # ew, but it works...
 		if this_playlist == self.old_playlist: return
 		self.old_playlist = this_playlist
@@ -349,7 +364,7 @@ class RemiApp(App):
 
 		# styling the new table:
 		# for each row element:
-		for row_key, playlist_item in zip(self.playlist.table._render_children_list[1:], playlist):
+		for row_key, playlist_item in zip(self.playlist.table._render_children_list[1:][1 if start_ellipsis else 0 : -1 if end_ellipsis else None], playlist):
 			row_widget = self.playlist.table.get_child(row_key)
 			row_widget.set_on_click_listener(self.on_table_row_click, playlist_item)
 
@@ -398,6 +413,7 @@ class RemiApp(App):
 					item_widget.attributes["title"] = "Remove this item from the playlist"
 
 				#print(index, key, item_widget)
+
 
 	def set_playing(self, is_playing:bool): # Only updates GUI elements!
 		self.playback.play.set_text(icons.PAUSE if is_playing else icons.PLAY)

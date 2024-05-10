@@ -136,6 +136,7 @@
         packages = [
           pkgs.poetry
           pkgs.python3
+          pkgs.entr
         ];
       };
     });
