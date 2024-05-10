@@ -24,7 +24,7 @@ A set of simple API endpoints and ready-to-go clients to interface with the [Grz
 As the user intended to run the server:
 
     pip install --user git+https://github.com/Programvareverkstedet/grzegorz_clients.git#master
-    grzegorz-webui --host 0.0.0.0 --port 80
+    grzegorz-webui --host-name 0.0.0.0 --port 80
 
 It's rather insecure and could use a reverse proxy and some whitelisting. ;)
 

@@ -19,6 +19,7 @@ def request_delete(func):
         url, data = func(*args, **kwargs)
         if type(data) is dict: data = json.dumps(data)
         response = requests.delete(f"{BASE_URL}/{url}", data=data)
+        response.raise_for_status() # raises HTTPError of any
         data = json.loads(response.text)
         if "error" not in data or data["error"] != False:
             print(data)
@@ -31,6 +32,7 @@ def request_post(func):
         url, data = func(*args, **kwargs)
         if type(data) is dict: data = json.dumps(data)
         response = requests.post(f"{BASE_URL}/{url}", data=data)
+        response.raise_for_status() # raises HTTPError of any
         data = json.loads(response.text)
         if "error" not in data or data["error"] != False:
             print(data)
@@ -42,6 +44,7 @@ def request_get(func):
     def new_func(*args, **kwargs):
         url = func(*args, **kwargs)
         response = requests.get(f"{BASE_URL}/{url}")
+        response.raise_for_status() # raises HTTPError of any
         data = json.loads(response.text)
         if "error" not in data or data["error"] != False:
             raise APIError(data["errortext"])
