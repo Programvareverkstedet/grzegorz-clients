@@ -11,43 +11,84 @@ def set_endpoint(base_url:str):
 # Exceptions:
 class APIError(Exception): pass
 
+def parse_message(
+    method: str,
+    url: str,
+    status: str,
+    function_name: str,
+    json_text: str
+) -> dict[str, any]:
+    prefix = f"[{function_name}] {method} /{url} -> {status}:"
+    try:
+        data = json.loads(json_text)
+    except json.JSONDecodeError:
+        raise APIError(f"{prefix} Expected json response, got:\n{json_text}")
+
+    if type(data) is not dict:
+        raise APIError(f"{prefix} Expected json response to be a dict, got:\n{json_text}")
+
+    if "error" not in data:
+        raise APIError(f"{prefix} Missing json data 'error', got:\n{json_text}")
+
+    if data["error"] != False:
+        raise APIError(f"{prefix} Got error {str(data['error'])}, got:\n{json_text}")
+
+    if "success" not in data:
+        raise APIError(f"{prefix} Missing json data 'error', got:\n{json_text}")
+
+    return data
+
 # decorator:
 # (TODO): Add logging
 def request_delete(func):
     @wraps(func)
     def new_func(*args, **kwargs):
         url, data = func(*args, **kwargs)
-        if type(data) is dict: data = json.dumps(data)
-        response = requests.delete(f"{BASE_URL}/{url}", data=data)
-        response.raise_for_status() # raises HTTPError of any
-        data = json.loads(response.text)
-        if "error" not in data or data["error"] != False:
-            print(data)
-            raise APIError(data["error"])
+        response = requests.delete(f"{BASE_URL}/{url}", json=data)
+        response.raise_for_status() # raises HTTPError, if any
+        data = parse_message(
+            "DELETE",
+            url,
+            response.status_code,
+            func.__name__,
+            response.text,
+        )
         return data["success"]
     return new_func
+
 def request_post(func):
     @wraps(func)
     def new_func(*args, **kwargs):
         url, data = func(*args, **kwargs)
-        if type(data) is dict: data = json.dumps(data)
-        response = requests.post(f"{BASE_URL}/{url}", data=data)
-        response.raise_for_status() # raises HTTPError of any
-        data = json.loads(response.text)
-        if "error" not in data or data["error"] != False:
-            print(data)
-            raise APIError(data["error"])
+        response = requests.post(f"{BASE_URL}/{url}", json=data)
+        response.raise_for_status() # raises HTTPError, if any
+        data = parse_message(
+            "POST",
+            url,
+            response.status_code,
+            func.__name__,
+            response.text,
+        )
         return data["success"]
     return new_func
+
 def request_get(func):
     @wraps(func)
     def new_func(*args, **kwargs):
         url = func(*args, **kwargs)
         response = requests.get(f"{BASE_URL}/{url}")
-        response.raise_for_status() # raises HTTPError of any
-        data = json.loads(response.text)
-        if "error" not in data or data["error"] != False:
-            raise APIError(data["errortext"])
+        response.raise_for_status() # raises HTTPError, if any
+        data = parse_message(
+            "GET",
+            url,
+            response.status_code,
+            func.__name__,
+            response.text,
+        )
+
+        if "value" not in data:
+            raise APIError(f"[{func.__name__}] Missing json data 'value', got:\n{json.dumps(data)}")
+
         return data["value"]
     return new_func
 
