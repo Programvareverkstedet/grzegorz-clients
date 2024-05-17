@@ -31,37 +31,62 @@ def print_json(obj):
 
 cli = typer.Typer(no_args_is_help=True)
 
-
-@cli.command(help="Add one ore more items to the playlist. [--play, --now]")
-def add(
-    urls: list[str],
-    play: bool = False,
-    now: bool = False,
-    api_base: str = DEFAULT_API_BASE,
+def _add(
+    urls     : list[str],
+    put_pre  : bool = False,
+    put_post : bool = False,
+    play     : bool = False,
+    api_base : str = DEFAULT_API_BASE,
 ):
     api.set_endpoint(api_base)
-    if now:
+    if put_pre or put_post:
         pre = api.get_playlist()
 
     for url in urls:
         resp = api.load_path(url)
         rich.print(f"{url} : {resp!r}", file=sys.stderr)
 
-    if now:
+    if put_pre or put_post:
+        assert put_pre != put_post
         post = api.get_playlist()
         current_index, = [i.get("index", -1) for i in post if i.get("current", False)][:1] or [0]
         old_indices = set(i.get("index", -1) for i in pre)
         new_indices = set(i.get("index", -1) for i in post) - old_indices
         assert all(i > current_index for i in new_indices)
-        target = current_index
-        if not play: target += 1
+        target = current_index if put_pre else current_index + 1
         if target not in new_indices:
             for idx in sorted(new_indices):
                 api.playlist_move(idx, target)
                 target += 1
 
     if play:
-        if now: api.playlist_goto(current_index)
+        assert put_pre or put_post
+        api.playlist_goto(current_index if put_pre else current_index + 1)
+        api.set_playing(True)
+
+@cli.command(help="Add one ore more items to the playlist")
+def play(
+    urls: list[str],
+    pre: bool = False,
+    api_base: str = DEFAULT_API_BASE,
+):
+    _add(urls, put_post=not pre, put_pre=pre, play=True, api_base=api_base)
+
+@cli.command(help="Add one ore more items to the playlist")
+def next(
+    urls: list[str],
+    api_base: str = DEFAULT_API_BASE,
+):
+    _add(urls, put_post=True, api_base=api_base)
+
+@cli.command(help="Add one ore more items to the playlist")
+def queue(
+    urls: list[str],
+    play: bool = True,
+    api_base: str = DEFAULT_API_BASE,
+):
+    _add(urls, api_base=api_base)
+    if play:
         api.set_playing(True)
 
 @cli.command(name="list", help="List the current playlist")
@@ -71,8 +96,8 @@ def list_(
     api.set_endpoint(api_base)
     print_json(api.get_playlist())
 
-@cli.command(help="Set Playing")
-def play( api_base: str = DEFAULT_API_BASE ):
+@cli.command(help="Set Playing to True")
+def resume( api_base: str = DEFAULT_API_BASE ):
     api.set_endpoint(api_base)
     # TODO: add logic to seek to start of song if at end of song AND at end of playlist?
     rich.print(api.set_playing(True), file=sys.stderr)
@@ -83,7 +108,7 @@ def pause( api_base: str = DEFAULT_API_BASE ):
     rich.print(api.set_playing(False), file=sys.stderr)
 
 @cli.command(help="Goto next item in playlist")
-def next( api_base: str = DEFAULT_API_BASE ):
+def skip( api_base: str = DEFAULT_API_BASE ):
     api.set_endpoint(api_base)
     rich.print(api.playlist_next(), file=sys.stderr)
 
@@ -129,7 +154,7 @@ def status(
 
 @cli.command(help="Set the playback volume")
 def set_volume(
-    volume: float,
+    volume: int,
     api_base: str = DEFAULT_API_BASE,
 ):
     api.set_endpoint(api_base)
