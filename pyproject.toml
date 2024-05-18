@@ -6,19 +6,22 @@ authors = ["Peder Bergebakken Sundt <pbsds@hotmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
+python = ">=3.8.1,<4.0"
 remi = "1.0"
 requests = ">=2.27.1,<3"
 rich = ">=13.3.5"
 typer = ">=0.4.0"
 urllib3 = ">=1.26.8,<3"
+textual = {version = "^0.61.0", extras = ["tui"]}
 
-[tool.poetry.dev-dependencies]
-python-lsp-server = {extras = ["all"], version = "^1.5.0"}
+[tool.poetry.group.dev.dependencies]
+python-lsp-server = {extras = ["all"], version = "^1.11.0"}
+textual-dev = "^1.5.1"
 
 [tool.poetry.scripts]
 grzegorz-webui = "grzegorz_clients.__main__:cli"
 grzegorzctl = "grzegorz_clients.cli:cli"
+grzegorztui = "grzegorz_clients.tui:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
