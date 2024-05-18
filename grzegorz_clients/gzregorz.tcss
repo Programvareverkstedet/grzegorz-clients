@@ -1,0 +1,23 @@
+/* https://textual.textualize.io/guide/design/#theme-reference */
+Screen {
+    align: center top;
+    box-sizing: border-box;
+}
+Horizontal {
+    height: auto;
+}
+#header {
+    height: 1;
+    overflow: hidden;
+}
+#controls {
+    background: $background-lighten-2;
+    align: center middle;
+}
+#volumebar {
+}
+#seekbar {
+}
+DataTable#playlist {
+    width: 100%;
+}
