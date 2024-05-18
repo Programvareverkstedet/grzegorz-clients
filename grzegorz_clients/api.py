@@ -16,7 +16,8 @@ def parse_message(
     url: str,
     status: str,
     function_name: str,
-    json_text: str
+    json_text: str,
+    is_get: bool,
 ) -> dict[str, any]:
     prefix = f"[{function_name}] {method} /{url} -> {status}:"
     try:
@@ -33,8 +34,8 @@ def parse_message(
     if data["error"] != False:
         raise APIError(f"{prefix} Got error {str(data['error'])}, got:\n{json_text}")
 
-    if "success" not in data:
-        raise APIError(f"{prefix} Missing json data 'error', got:\n{json_text}")
+    if not is_get and "success" not in data:
+        raise APIError(f"{prefix} Missing json data 'success', got:\n{json_text}")
 
     return data
 
@@ -52,6 +53,7 @@ def request_delete(func):
             response.status_code,
             func.__name__,
             response.text,
+            is_get = False,
         )
         return data["success"]
     return new_func
@@ -68,6 +70,7 @@ def request_post(func):
             response.status_code,
             func.__name__,
             response.text,
+            is_get = False,
         )
         return data["success"]
     return new_func
@@ -84,6 +87,7 @@ def request_get(func):
             response.status_code,
             func.__name__,
             response.text,
+            is_get = True,
         )
 
         if "value" not in data:
