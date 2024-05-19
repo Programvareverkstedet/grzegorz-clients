@@ -107,6 +107,12 @@ def pause( api_base: str = DEFAULT_API_BASE ):
     api.set_endpoint(api_base)
     rich.print(api.set_playing(False), file=sys.stderr)
 
+@cli.command(help="Toggle playback")
+def toggle(api_base: str = DEFAULT_API_BASE):
+    api.set_endpoint(api_base)
+    playing = api.is_playing()
+    rich.print(api.set_playing(not playing), file=sys.stderr)
+
 @cli.command(help="Goto next item in playlist")
 def skip( api_base: str = DEFAULT_API_BASE ):
     api.set_endpoint(api_base)
