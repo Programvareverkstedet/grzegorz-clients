@@ -160,10 +160,19 @@ def status(
 
 @cli.command(help="Set the playback volume")
 def set_volume(
-    volume: int,
+    volume: str,
     api_base: str = DEFAULT_API_BASE,
 ):
     api.set_endpoint(api_base)
+
+    volume = volume.removesuffix("%")
+
+    if volume.startswith("+") or volume.startswith("-"):
+        current_volume = api.get_volume()
+        new_volume = max(0, min(100, current_volume + int(volume)))
+    else:
+        new_volume = int(volume)
+
     rich.print(api.set_volume(volume), file=sys.stderr)
 
 
