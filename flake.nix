@@ -57,14 +57,28 @@
         nativeBuildInputs = [ poetry-core ];
         propagatedBuildInputs = [ setuptools flakes.self.pkgs.remi requests typer rich urllib3 ];
       };
-      default = flakes.self.pkgs.grzegorz-clients;
+      grzegorzctl = pkgs.runCommandNoCCLocal "grzegorzctl" (
+        {
+          nativeBuildInputs = [ pkgs.installShellFiles ];
+        } //
+        { inherit (flakes.self.pkgs.grzegorz-clients) meta; } //
+        { meta.mainProgram = "grzegorzctl"; }
+      )''
+        mkdir -p $out/bin
+        ln -s "${flakes.self.pkgs.grzegorz-clients}/bin/grzegorzctl" $out/bin/grzegorzctl
+        installShellCompletion --cmd grzegorzctl \
+          --bash <($out/bin/grzegorzctl --show-completion bash) \
+          --zsh <($out/bin/grzegorzctl --show-completion zsh) \
+          --fish <($out/bin/grzegorzctl --show-completion fish)
+      '';
+      default = flakes.self.pkgs.grzegorzctl;
     });
 
     apps = forAllSystems ({ system, ...}: rec {
       grzegorz-webui.type = "app";
       grzegorz-webui.program = "${self.packages.${system}.grzegorz-clients}/bin/grzegorz-webui";
       grzegorzctl.type = "app";
-      grzegorzctl.program = "${self.packages.${system}.grzegorz-clients}/bin/grzegorzctl";
+      grzegorzctl.program = "${self.packages.${system}.grzegorzctl}/bin/grzegorzctl";
       default = grzegorzctl;
     });
 
