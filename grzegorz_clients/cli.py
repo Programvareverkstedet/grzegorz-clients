@@ -64,7 +64,7 @@ def _add(
         api.playlist_goto(current_index if put_pre else current_index + 1)
         api.set_playing(True)
 
-@cli.command(help="Add one ore more items to the playlist")
+@cli.command(help="Add one or more items to the playlist")
 def play(
     urls: list[str],
     pre: bool = False,
@@ -72,14 +72,14 @@ def play(
 ):
     _add(urls, put_post=not pre, put_pre=pre, play=True, api_base=api_base)
 
-@cli.command(help="Add one ore more items to the playlist")
+@cli.command(help="Add one or more items to the playlist")
 def next(
     urls: list[str],
     api_base: str = DEFAULT_API_BASE,
 ):
     _add(urls, put_post=True, api_base=api_base)
 
-@cli.command(help="Add one ore more items to the playlist")
+@cli.command(help="Add one or more items to the playlist")
 def queue(
     urls: list[str],
     play: bool = True,
