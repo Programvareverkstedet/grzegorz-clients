@@ -170,10 +170,11 @@ def set_volume(
     if volume.startswith("+") or volume.startswith("-"):
         current_volume = api.get_volume()
         new_volume = max(0, min(100, current_volume + int(volume)))
+        new_volume = int(new_volume)
     else:
         new_volume = int(volume)
 
-    rich.print(api.set_volume(volume), file=sys.stderr)
+    rich.print(api.set_volume(new_volume), file=sys.stderr)
 
 
 if __name__ == "__main__":
