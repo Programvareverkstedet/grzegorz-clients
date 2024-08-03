@@ -294,7 +294,7 @@ class RemiApp(App):
 			except api.APIError:
 				playback_pos = None
 
-			if playback_pos:
+			if playback_pos and isinstance(playback_pos, dict) and playback_pos["current"] and playback_pos["total"]:
 				slider_pos = playback_pos["current"] / playback_pos["total"] * 100
 				current = seconds_to_timestamp(playback_pos["current"])
 				total = seconds_to_timestamp(playback_pos["total"])
