@@ -41,6 +41,9 @@
           hash = "sha256-65qc+td/mk/RSUcRWbPGVbS9S0F1o1S9zIkJb0Ek2eQ=";
           extension = "zip";
         };
+        pyproject = true;
+        build-system = [ setuptools ];
+        dependencies = [ legacy-cgi ];
         # https://github.com/rawpython/remi/issues/216
         postPatch = ''
           substituteInPlace remi/server.py \
@@ -52,7 +55,7 @@
       grzegorz-clients = with pkgs.python3.pkgs; buildPythonPackage {
         pname = "grzegorz-clients";
         version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).tool.poetry.version;
-        format = "pyproject";
+        pyproject = true;
         src = ./.;
         nativeBuildInputs = [ poetry-core ];
         propagatedBuildInputs = [ setuptools flakes.self.pkgs.remi requests typer rich urllib3 ];
