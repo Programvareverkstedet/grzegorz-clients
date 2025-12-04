@@ -74,6 +74,10 @@
       default = flakes.self.pkgs.grzegorzctl;
     });
 
+    checks = forAllSystems ({ system, ... }: {
+      inherit (self.packages.${system}) grzegorzctl grzegorz-clients;
+    });
+
     apps = forAllSystems ({ system, ...}: rec {
       grzegorz-webui.type = "app";
       grzegorz-webui.program = "${self.packages.${system}.grzegorz-clients}/bin/grzegorz-webui";
